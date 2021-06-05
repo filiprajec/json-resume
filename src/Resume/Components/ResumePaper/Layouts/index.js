@@ -14,7 +14,7 @@ import React, {
 import PropTypes from "prop-types";
 import stylePropType from "react-style-proptype";
 
-import { childrenPropType } from "../../../../../../dingohead-creative/src/utils/customPropTypes";
+import { childrenPropType } from "../../../shared/utils/propTypes";
 
 import StyleSheet from "./Layouts.module.scss";
 
