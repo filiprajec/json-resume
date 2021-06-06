@@ -135,10 +135,11 @@ class ResumeSection {
       projects: () =>
         this.data.map(
           (eachData) =>
-            `${[eachData.name, eachData.roles.join(", ")].join(", ")} • ${
-              eachData.entity ||
-              (eachData.type && [eachData.entity, eachData.type].join(" - "))
-            }`
+            `${[eachData.name, eachData.roles.join(", ")].join(", ")}${
+              eachData.entity ? ` •  ${eachData.entity}` : ""
+            }
+              ${eachData.type ? ` •  ${eachData.type}` : ""}
+            `
         ),
     });
   }

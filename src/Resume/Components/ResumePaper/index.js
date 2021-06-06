@@ -23,7 +23,7 @@ import BasicsCell from "./Cells/BasicsCell";
 import { ratingBarDataPropType } from "../../ResumeSection/propTypes";
 import Styles from "../../shared/styles";
 
-const Page = styled.div`
+const Paper = styled.div`
   display: block;
   position: relative;
   top: ${(props) => props.top ?? 0};
@@ -61,7 +61,7 @@ const Page = styled.div`
   }
 `;
 
-const PageInner = styled.div`
+const PaperInner = styled.div`
   position: absolute;
   margin: ${(props) => props.margin};
   width: calc(100% - 2 * ${(props) => props.margin});
@@ -121,16 +121,16 @@ const ResumePaper = forwardRef(
 
     if (errorMessage !== "") {
       return (
-        <Page background={Styles.colors.basic.paper}>
+        <Paper background={Styles.colors.basic.paper}>
           <ErrorPage />
-        </Page>
+        </Paper>
       );
     }
 
     return (
-      <Page background={Styles.colors.basic.paper}>
+      <Paper background={Styles.colors.basic.paper}>
         {isLoading && <LoadingPage />}
-        <PageInner margin="20px" ref={outerRef}>
+        <PaperInner margin="20px" ref={outerRef}>
           <Grid ref={innerRef}>
             <ColumnLayout>
               <Cell fraction={1} style={{ backgroundColor: theme.primary }}>
@@ -233,8 +233,8 @@ const ResumePaper = forwardRef(
               </Cell>
             </ColumnLayout>
           </Grid>
-        </PageInner>
-      </Page>
+        </PaperInner>
+      </Paper>
     );
   }
 );
