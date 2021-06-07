@@ -5,29 +5,27 @@
 
 import { createContext, useCallback, useEffect, useState, useRef } from "react";
 
-const startingAccuracy = 0.005;
-const minRenderIterations = 100;
-const percentageIncreasePerRender = 1.02;
+const initialAccuracy = 0.005;
+const rendersBeforeDecreasingAccuracy = 100;
+const accuracyDecreasePerRender = 1.02;
 
 export const useZoomValue = (paperRefs, dependencies) => {
   const [zoom, setZoom] = useState(1);
   const [rendering, setRendering] = useState(false);
-  const [marginTop, setMarginTop] = useState(0);
+  const [deltaHeight, setDeltaHeight] = useState(0);
   const [renderCount, setRenderCount] = useState(0);
-  const [stoppingAccuracy, setStoppingAccuracy] = useState(startingAccuracy);
-  const ignoreNextRender = useRef(false);
+  const [stoppingAccuracy, setStoppingAccuracy] = useState(initialAccuracy);
+  const skipRender = useRef(false);
   const isBrowser = typeof window !== "undefined";
 
-  const getZoom = useCallback(() => {
+  const getZoomAndDeltaHeight = useCallback(() => {
     const paperRefsExist =
       paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
     if (!paperRefsExist) {
       return;
     }
 
-    if (!isBrowser) return;
-
-    const marginTop_ =
+    const deltaHeight_ =
       paperRefs.current.outer.clientHeight -
       paperRefs.current.inner.clientHeight;
     const zoom_ =
@@ -35,54 +33,64 @@ export const useZoomValue = (paperRefs, dependencies) => {
       paperRefs.current.inner.clientHeight;
 
     // eslint-disable-next-line consistent-return
-    return [zoom_, marginTop_];
+    return [zoom_, deltaHeight_];
   }, [paperRefs]);
 
-  const setTopOffset = useCallback(
-    (marginTop_) => {
+  const setTopPaperOffset = useCallback(
+    (deltaHeight_) => {
       const { inner } = paperRefs.current;
-      inner.style.marginTop = `${marginTop_}px`;
-      setMarginTop(marginTop_);
+      inner.style.marginTop = `${deltaHeight_ / 2}px`;
     },
     [paperRefs]
   );
 
+  const updateZoomHelper = useCallback((zoom_) => {
+    if (zoom_ > 1) {
+      setZoom((prev) => prev + initialAccuracy);
+    } else if (zoom_ < 1) {
+      setZoom((prev) => prev - initialAccuracy);
+    }
+  }, []);
+
+  const updateStoppingAccuracyHelper = useCallback((renderCount_) => {
+    const accuracyDecreaseFactor =
+      accuracyDecreasePerRender **
+      (renderCount_ - rendersBeforeDecreasingAccuracy);
+    setStoppingAccuracy((prev) => prev * accuracyDecreaseFactor);
+  }, []);
+
   useEffect(() => {
-    if (ignoreNextRender.current === true) {
-      ignoreNextRender.current = false;
+    if (skipRender.current === true) {
+      skipRender.current = false;
       return;
     }
+    if (!isBrowser) return;
 
-    const [zoom_, marginTop_] = getZoom(renderCount);
+    const [zoom_, deltaHeight_] = getZoomAndDeltaHeight(renderCount);
+    const stoppingCondition =
+      Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ > 0;
 
-    if (Math.abs(1 - zoom_) < stoppingAccuracy && renderCount) {
-      // stop
+    if (stoppingCondition) {
       setRendering(false);
-      setTopOffset(marginTop_);
+      setTopPaperOffset(deltaHeight_);
+      setDeltaHeight(deltaHeight_);
       setRenderCount(0);
-      setStoppingAccuracy(startingAccuracy);
-      ignoreNextRender.current = true;
+      setStoppingAccuracy(initialAccuracy);
+      skipRender.current = true;
     } else {
-      // keep going
       setRendering(true);
       setRenderCount((prev) => prev + 1);
-      if (zoom_ > 1) {
-        setZoom((prev) => prev + startingAccuracy);
-      } else if (zoom_ < 1) {
-        setZoom((prev) => prev - startingAccuracy);
-      }
-      if (renderCount > minRenderIterations) {
-        const accuracyDecreaseFactor =
-          percentageIncreasePerRender ** (renderCount - minRenderIterations);
-        setStoppingAccuracy((prev) => prev * accuracyDecreaseFactor);
+      updateZoomHelper(zoom_);
+      if (renderCount > rendersBeforeDecreasingAccuracy) {
+        updateStoppingAccuracyHelper(renderCount);
       }
     }
   }, [renderCount, stoppingAccuracy, dependencies]);
 
-  return { zoom, rendering, marginTop };
+  return { zoom, rendering, deltaHeight };
 };
 
-const getInitialContext = () => ({ zoom: 1, rendering: false, marginTop: 0 });
+const getInitialContext = () => ({ zoom: 1, rendering: false, deltaHeight: 0 });
 
 const ZoomContext = createContext(getInitialContext());
 export const ZoomProvider = ZoomContext.Provider;

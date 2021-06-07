@@ -69,7 +69,7 @@ const Resume = () => {
   return (
     <ZoomProvider value={zoomValue}>
       <ThemeProvider value={themeValue}>
-        <GlobalPrintStyle background={Styles.colors.basic.paper} margin={zoomValue.marginTop} />
+        <GlobalPrintStyle background={Styles.colors.basic.paper} margin={zoomValue.deltaHeight/2} />
         <Menu
           resumeJsonUrl={jsonUrl}
           setResumeJsonUrl={setJsonUrl}
