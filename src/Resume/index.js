@@ -3,7 +3,7 @@
     <> Filip Rajec
 */
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { createGlobalStyle } from "styled-components";
@@ -45,7 +45,7 @@ const GlobalPrintStyle = createGlobalStyle`
   }
 `;
 
-const defaultJsonUrl = `https://raw.githubusercontent.com/jsonresume/resume-schema/master/sample.resume.json`;
+const defaultJsonUrl = "https://raw.githubusercontent.com/jsonresume/resume-schema/master/sample.resume.json";
 
 const Resume = () => {
   const [jsonUrl, setJsonUrl] = useState(defaultJsonUrl);
@@ -65,6 +65,23 @@ const Resume = () => {
     )
   );
   const isLoading = !sections || isLoadingJson || zoomValue.rendering;
+
+  const getURLFromQueryString = useCallback(() => {
+    const isBrowser = typeof window !== "undefined";
+    if (!isBrowser) {
+      return null;
+    }
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get('json');
+  },[]);
+
+  useEffect(() => {
+    const jsonUrl_ = getURLFromQueryString();
+    if (jsonUrl_) {
+      setJsonUrl(jsonUrl_);
+    }
+  },[]);
 
   return (
     <ZoomProvider value={zoomValue}>

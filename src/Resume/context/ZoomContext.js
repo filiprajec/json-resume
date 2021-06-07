@@ -19,12 +19,6 @@ export const useZoomValue = (paperRefs, dependencies) => {
   const isBrowser = typeof window !== "undefined";
 
   const getZoomAndDeltaHeight = useCallback(() => {
-    const paperRefsExist =
-      paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
-    if (!paperRefsExist) {
-      return;
-    }
-
     const deltaHeight_ =
       paperRefs.current.outer.clientHeight -
       paperRefs.current.inner.clientHeight;
@@ -64,9 +58,15 @@ export const useZoomValue = (paperRefs, dependencies) => {
       skipRender.current = false;
       return;
     }
+    const paperRefsExist =
+      paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
+    if (!paperRefsExist) {
+      return;
+    }
+    
     if (!isBrowser) return;
-
     const [zoom_, deltaHeight_] = getZoomAndDeltaHeight(renderCount);
+
     const stoppingCondition =
       Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ > 0;
 

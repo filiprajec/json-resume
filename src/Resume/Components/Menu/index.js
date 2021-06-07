@@ -179,6 +179,10 @@ const Menu = ({
   }, [ratingBarData]);
 
   useEffect(() => {
+    setResumeJsonUrlValue(resumeJsonUrl);
+  }, [resumeJsonUrl]);
+
+  useEffect(() => {
     if (errorMessage !== "") {
       setShowMoreOptions(false);
     }
@@ -196,7 +200,7 @@ const Menu = ({
     setHeadings(headingValues);
     setRatingBarData(ratingBarDataLocal);
   };
-
+  
   return (
     <Container open={isOpen}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
