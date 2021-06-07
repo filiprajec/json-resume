@@ -3,20 +3,22 @@
   <> Filip Rajec
 */
 
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState, useRef } from "react";
 
 const startingAccuracy = 0.005;
+const minRenderIterations = 100;
+const percentageIncreasePerRender = 1.02;
 
 export const useZoomValue = (paperRefs, dependencies) => {
   const [zoom, setZoom] = useState(1);
   const [rendering, setRendering] = useState(false);
-  const [renderCount, setRenderCount] = useState(0);
-  const [accuracy, setAccuracy] = useState(startingAccuracy);
   const [marginTop, setMarginTop] = useState(0);
-  const minRenderIterations = 100;
+  const [renderCount, setRenderCount] = useState(0);
+  const [stoppingAccuracy, setStoppingAccuracy] = useState(startingAccuracy);
+  const ignoreNextRender = useRef(false);
   const isBrowser = typeof window !== "undefined";
 
-  const syncZoom = useCallback(() => {
+  const getZoom = useCallback(() => {
     const paperRefsExist =
       paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
     if (!paperRefsExist) {
@@ -25,87 +27,62 @@ export const useZoomValue = (paperRefs, dependencies) => {
 
     if (!isBrowser) return;
 
-    setRendering(true);
-
-    const heightDiff =
+    const marginTop_ =
       paperRefs.current.outer.clientHeight -
       paperRefs.current.inner.clientHeight;
-    const zoomRatio =
+    const zoom_ =
       paperRefs.current.outer.clientHeight /
       paperRefs.current.inner.clientHeight;
-    const setTopOffset = () => {
+
+    // eslint-disable-next-line consistent-return
+    return [zoom_, marginTop_];
+  }, [paperRefs]);
+
+  const setTopOffset = useCallback(
+    (marginTop_) => {
       const { inner } = paperRefs.current;
-      const marginTop_ = heightDiff / 2;
       inner.style.marginTop = `${marginTop_}px`;
       setMarginTop(marginTop_);
-    };
+    },
+    [paperRefs]
+  );
 
-    const stoppingCondition = Math.abs(1 - zoomRatio) < accuracy;
-
-    if (stoppingCondition && heightDiff >= 0) {
-      setTopOffset();
-      setRendering(false);
-      setRenderCount(0);
+  useEffect(() => {
+    if (ignoreNextRender.current === true) {
+      ignoreNextRender.current = false;
       return;
     }
 
-    if (renderCount > minRenderIterations) {
-      setAccuracy((prev) => prev * 1.01);
-    }
+    const [zoom_, marginTop_] = getZoom(renderCount);
 
-    if (zoomRatio > 1) {
-      setZoom((prev) => prev + startingAccuracy);
-    } else if (zoomRatio < 1) {
-      setZoom((prev) => prev - startingAccuracy);
-    }
-
-    setRenderCount((prev) => prev + 1);
-  }, [renderCount, paperRefs]);
-
-  useEffect(() => {
-    let resizeObserver = null;
-    if (!isBrowser) return null;
-
-    if (paperRefs?.current?.inner) {
-      resizeObserver = new ResizeObserver(() => syncZoom());
-      resizeObserver.observe(paperRefs.current.inner);
-    }
-
-    return () => {
-      if (paperRefs?.current?.inner) {
-        resizeObserver.unobserve(paperRefs.current.inner);
+    if (Math.abs(1 - zoom_) < stoppingAccuracy && renderCount) {
+      // stop
+      setRendering(false);
+      setTopOffset(marginTop_);
+      setRenderCount(0);
+      setStoppingAccuracy(startingAccuracy);
+      ignoreNextRender.current = true;
+    } else {
+      // keep going
+      setRendering(true);
+      setRenderCount((prev) => prev + 1);
+      if (zoom_ > 1) {
+        setZoom((prev) => prev + startingAccuracy);
+      } else if (zoom_ < 1) {
+        setZoom((prev) => prev - startingAccuracy);
       }
-    };
-  }, [paperRefs, syncZoom]);
-
-  useEffect(() => {
-    const paperRefsExist =
-      paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
-    if (!isBrowser) return;
-    if (paperRefsExist) {
-      syncZoom();
-    }
-  }, [paperRefs, syncZoom, zoom]);
-
-  // trigger rerender when custom dependencies change
-  useEffect(() => {
-    const paperRefsExist =
-      paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
-    if (!isBrowser) return;
-    setAccuracy(startingAccuracy);
-    if (!rendering) {
-      if (paperRefsExist) {
-        syncZoom();
-      } else {
-        setRendering(false);
+      if (renderCount > minRenderIterations) {
+        const accuracyDecreaseFactor =
+          percentageIncreasePerRender ** (renderCount - minRenderIterations);
+        setStoppingAccuracy((prev) => prev * accuracyDecreaseFactor);
       }
     }
-  }, [dependencies]);
+  }, [renderCount, stoppingAccuracy, dependencies]);
 
   return { zoom, rendering, marginTop };
 };
 
-const getInitialContext = () => ({ zoom: 1, rendering: false });
+const getInitialContext = () => ({ zoom: 1, rendering: false, marginTop: 0 });
 
 const ZoomContext = createContext(getInitialContext());
 export const ZoomProvider = ZoomContext.Provider;

@@ -4,12 +4,14 @@ import ZoomContext from "../../../../context/ZoomContext";
 export const useMarkerCoordinates = (parentBoxRef, markerRefs) => {
   const [markerCoordinates, setMarkerCoordinates] = useState([]);
   const [boxHeight, setBoxHeight] = useState(0);
-  const { zoom } = useContext(ZoomContext);
+  const { zoom, rendering } = useContext(ZoomContext);
   const isBrowser = typeof window !== "undefined";
 
   useEffect(() => {
     let resizeObserver = null;
     if (!isBrowser) return null;
+    if (rendering) return null;
+    
     if (parentBoxRef.current) {
       const syncBoxHeight = () => {
         if (parentBoxRef.current) {
@@ -23,9 +25,10 @@ export const useMarkerCoordinates = (parentBoxRef, markerRefs) => {
     return () => {
       if (parentBoxRef.current && resizeObserver) {
         resizeObserver.unobserve(parentBoxRef.current);
+        resizeObserver.disconnect();
       }
     };
-  }, [parentBoxRef, zoom]);
+  }, [parentBoxRef, zoom, rendering]);
 
   // gets the center coordinate of a ref absolute to the browser window
   const getRelativeCoordinatesFromRef = (ref, relativeToCoordinate) => {

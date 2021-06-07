@@ -245,7 +245,7 @@ const Menu = ({
             </div>
             {ratingBarDataLocal &&
               Object.keys(ratingBarDataLocal).map((dataID) => (
-                <Label>
+                <Label key={`rating-bar-input-${dataID}`}>
                   {ratingBarDataLocal[dataID].name}
                   <Input
                     type="range"
@@ -262,7 +262,6 @@ const Menu = ({
                         },
                       }))
                     }
-                    key={`rating-bar-input-${dataID}`}
                   />
                 </Label>
               ))}
