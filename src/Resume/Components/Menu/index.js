@@ -154,29 +154,29 @@ const Menu = ({
   resumeJsonUrl = "",
   setResumeJsonUrl = functionDefault,
   resumeSections = {},
-  headings = {},
-  setHeadings = functionDefault,
-  ratingBarData = {},
-  setRatingBarData = functionDefault,
+  settings = {},
+  setSettings = functionDefault,
   errorMessage = "",
   isLoading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [resumeJsonUrlValue, setResumeJsonUrlValue] = useState(resumeJsonUrl);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
-  const [headingValues, setHeadingValues] = useState(headings);
-  const [ratingBarDataLocal, setRatingBarDataLocal] = useState(ratingBarData);
+  const [headingValues, setHeadingValues] = useState(settings.headings);
+  const [ratingBarDataLocal, setRatingBarDataLocal] = useState(
+    settings.ratingBarData
+  );
   const { name: themeName, setTheme, themes } = useContext(ThemeContext);
 
   const isError = errorMessage !== "";
 
   useEffect(() => {
-    setHeadingValues(headings);
-  }, [headings]);
+    setHeadingValues(settings.headings);
+  }, [settings.headings]);
 
   useEffect(() => {
-    setRatingBarDataLocal(ratingBarData);
-  }, [ratingBarData]);
+    setRatingBarDataLocal(settings.ratingBarData);
+  }, [settings.ratingBarData]);
 
   useEffect(() => {
     setResumeJsonUrlValue(resumeJsonUrl);
@@ -197,10 +197,13 @@ const Menu = ({
   const handleSubmitResumeJsonUrl = (event) => {
     event.preventDefault();
     setResumeJsonUrl(resumeJsonUrlValue);
-    setHeadings(headingValues);
-    setRatingBarData(ratingBarDataLocal);
+    setSettings((prev) => ({
+      ...prev,
+      headings: headingValues,
+      ratingBarData: ratingBarDataLocal,
+    }));
   };
-  
+
   return (
     <Container open={isOpen}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -229,7 +232,7 @@ const Menu = ({
             </div>
             {headingValues &&
               Object.keys(headingValues).map((heading) =>
-              resumeSections && resumeSections[heading]?.hasContent() ? (
+                resumeSections && resumeSections[heading]?.hasContent() ? (
                   <Input
                     type="text"
                     value={headingValues[heading]}
@@ -303,10 +306,11 @@ Menu.propTypes = {
   setResumeJsonUrl: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   resumeSections: PropTypes.object,
-  headings: PropTypes.objectOf(PropTypes.string),
-  setHeadings: PropTypes.func,
-  ratingBarData: ratingBarDataPropType,
-  setRatingBarData: PropTypes.func,
+  settings: PropTypes.shape({
+    headings: PropTypes.objectOf(PropTypes.string),
+    ratingBarData: ratingBarDataPropType,
+  }),
+  setSettings: PropTypes.func,
   errorMessage: PropTypes.string,
   isLoading: PropTypes.bool,
 };

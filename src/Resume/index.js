@@ -3,17 +3,16 @@
     <> Filip Rajec
 */
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useRef, useMemo } from "react";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { createGlobalStyle } from "styled-components";
 
 import { useZoomValue, ZoomProvider } from "./context/ZoomContext";
 import { useThemeValue, ThemeProvider } from "./context/ThemeContext";
-import { useResumeJson, useResumeSections, useJsonUrl } from "./hooks";
+import { useResumeJson, useResumeSections, useJsonUrl, useResumeSettings } from "./hooks";
 import ResumePaper from "./Components/ResumePaper";
 import Menu from "./Components/Menu";
-import { headingsDefault } from "./ResumeSection/defaults";
 import Styles from "./shared/styles";
 
 import "./shared/styles/fonts/Karrik/import.scss";
@@ -48,18 +47,15 @@ const GlobalPrintStyle = createGlobalStyle`
 const Resume = () => {
   const [jsonUrl, setJsonUrl] = useJsonUrl();
   const [json, isLoadingJson, jsonError] = useResumeJson(jsonUrl);
-  const [headings, setHeadings] = useState(headingsDefault);
-  const [sections, ratingBarData, setRatingBarData] = useResumeSections(
-    json,
-    headings
-  );
+  const sections = useResumeSections(json);
+  const [settings, setSettings] = useResumeSettings(sections);
   const resumePaperRefs = useRef();
   const themeValue = useThemeValue();
   const zoomValue = useZoomValue(
     resumePaperRefs,
     useMemo(
-      () => [sections, headings, ratingBarData],
-      [sections, headings, ratingBarData]
+      () => [sections, settings.headings, settings.ratingBarData],
+      [sections, settings.headings, settings.ratingBarData]
     )
   );
   const isLoading = !sections || isLoadingJson || zoomValue.rendering;
@@ -72,18 +68,16 @@ const Resume = () => {
           resumeJsonUrl={jsonUrl}
           setResumeJsonUrl={setJsonUrl}
           resumeSections={sections}
-          headings={headings}
-          setHeadings={setHeadings}
-          ratingBarData={ratingBarData}
-          setRatingBarData={setRatingBarData}
+          settings={settings}
+          setSettings={setSettings}
           errorMessage={jsonError}
           isLoading={isLoading}
         />
         <ResumePaper
           resumeSections={sections}
           resumeJson={json}
-          headings={headings}
-          ratingBarData={ratingBarData}
+          headings={settings.headings}
+          ratingBarData={settings.ratingBarData}
           errorMessage={jsonError}
           isLoading={isLoading}
           ref={resumePaperRefs}
