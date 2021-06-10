@@ -28,7 +28,7 @@ const Paper = styled.div`
   position: relative;
   top: ${(props) => props.top ?? 0};
   width: 21cm;
-  height: 29.7cm;
+  height: 29.5cm;
   margin: 0.5cm auto calc(0.5cm + ${(props) => props.top ?? "0cm"}) auto;
   box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.1);
   background: ${(props) => props.background};
@@ -36,6 +36,7 @@ const Paper = styled.div`
   line-height: 1.1;
   transition: all 0.1s ease-in-out;
   overflow: hidden;
+  box-sizing: content-box;
 
   * {
     box-sizing: border-box;
@@ -52,20 +53,22 @@ const Paper = styled.div`
   }
 
   @media print {
-    margin: 0;
-    top: 0;
     box-shadow: none;
     width: 21cm;
-    height: 29.7cm;
+    height: 29.5cm;
+    margin: 0;
     background: ${(props) => props.background};
+    box-sizing: content-box;
   }
 `;
 
 const PaperInner = styled.div`
   position: absolute;
+  top: 0.1cm;
   margin: ${(props) => props.margin};
   width: calc(100% - 2 * ${(props) => props.margin});
   height: calc(100% - 2 * ${(props) => props.margin});
+  box-sizing: content-box;
 `;
 
 const FullPage = styled.div`

@@ -10,7 +10,12 @@ import { createGlobalStyle } from "styled-components";
 
 import { useZoomValue, ZoomProvider } from "./context/ZoomContext";
 import { useThemeValue, ThemeProvider } from "./context/ThemeContext";
-import { useResumeJson, useResumeSections, useJsonUrl, useResumeSettings } from "./hooks";
+import {
+  useResumeJson,
+  useResumeSections,
+  useJsonUrl,
+  useResumeSettings,
+} from "./hooks";
 import ResumePaper from "./Components/ResumePaper";
 import Menu from "./Components/Menu";
 import Styles from "./shared/styles";
@@ -19,21 +24,15 @@ import "./shared/styles/fonts/Karrik/import.scss";
 
 const GlobalPrintStyle = createGlobalStyle`
   @media print {
-    @page { margin: ${props => {
-      // sets margin on [min,max]
-      const margin = { max: 15, min: 2, current: props.margin }
-      margin.current = margin.max - margin.current;
-      if (margin.current < margin.min) {
-        margin.current = margin.min;
-      }
-      return margin.current;
-     }}px }
+    @page { 
+      margin: 0; 
+    }
     html,
     body {
       margin: 0;
       box-shadow: none;
       width: 21cm;
-      height: 29.7cm;
+      height: 29.5cm;
       overflow: hidden;
       background: ${(props) => props.background};
     }
@@ -63,7 +62,9 @@ const Resume = () => {
   return (
     <ZoomProvider value={zoomValue}>
       <ThemeProvider value={themeValue}>
-        <GlobalPrintStyle background={Styles.colors.basic.paper} margin={zoomValue.deltaHeight/2} />
+        <GlobalPrintStyle
+          background={Styles.colors.basic.paper}
+        />
         <Menu
           resumeJsonUrl={jsonUrl}
           setResumeJsonUrl={setJsonUrl}

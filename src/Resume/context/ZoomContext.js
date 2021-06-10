@@ -25,8 +25,6 @@ export const useZoomValue = (paperRefs, dependencies) => {
     const zoom_ =
       paperRefs.current.outer.clientHeight /
       paperRefs.current.inner.clientHeight;
-
-    // eslint-disable-next-line consistent-return
     return [zoom_, deltaHeight_];
   }, [paperRefs]);
 
@@ -63,12 +61,12 @@ export const useZoomValue = (paperRefs, dependencies) => {
     if (!paperRefsExist) {
       return;
     }
-    
+
     if (!isBrowser) return;
     const [zoom_, deltaHeight_] = getZoomAndDeltaHeight(renderCount);
 
     const stoppingCondition =
-      Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ > 0;
+      Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ >= 0;
 
     if (stoppingCondition) {
       setRendering(false);
