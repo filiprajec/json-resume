@@ -3,14 +3,14 @@
     <> Filip Rajec
 */
 
-import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { createGlobalStyle } from "styled-components";
 
 import { useZoomValue, ZoomProvider } from "./context/ZoomContext";
 import { useThemeValue, ThemeProvider } from "./context/ThemeContext";
-import { useResumeJson, useResumeSections } from "./hooks";
+import { useResumeJson, useResumeSections, useJsonUrl } from "./hooks";
 import ResumePaper from "./Components/ResumePaper";
 import Menu from "./Components/Menu";
 import { headingsDefault } from "./ResumeSection/defaults";
@@ -45,10 +45,8 @@ const GlobalPrintStyle = createGlobalStyle`
   }
 `;
 
-const defaultJsonUrl = "https://raw.githubusercontent.com/jsonresume/resume-schema/master/sample.resume.json";
-
 const Resume = () => {
-  const [jsonUrl, setJsonUrl] = useState(defaultJsonUrl);
+  const [jsonUrl, setJsonUrl] = useJsonUrl();
   const [json, isLoadingJson, jsonError] = useResumeJson(jsonUrl);
   const [headings, setHeadings] = useState(headingsDefault);
   const [sections, ratingBarData, setRatingBarData] = useResumeSections(
@@ -65,23 +63,6 @@ const Resume = () => {
     )
   );
   const isLoading = !sections || isLoadingJson || zoomValue.rendering;
-
-  const getURLFromQueryString = useCallback(() => {
-    const isBrowser = typeof window !== "undefined";
-    if (!isBrowser) {
-      return null;
-    }
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    return urlParams.get('json');
-  },[]);
-
-  useEffect(() => {
-    const jsonUrl_ = getURLFromQueryString();
-    if (jsonUrl_) {
-      setJsonUrl(jsonUrl_);
-    }
-  },[]);
 
   return (
     <ZoomProvider value={zoomValue}>
