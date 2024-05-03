@@ -1,22 +1,24 @@
 const path = require("path");
-const webpack = require('webpack');
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ESLintPlugin = require("eslint-webpack-plugin");
 
 module.exports = {
-  entry: path.join(__dirname, "src", "index.js"),
+  entry: path.join(__dirname, "src", "index.tsx"),
   output: { path: path.join(__dirname, "build"), filename: "index.bundle.js" },
   mode: process.env.NODE_ENV || "development",
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
     fallback: { process: "process/browser" },
+    extensions: [".tsx", ".ts", ".js", ".json"],
   },
-  devServer: { contentBase: path.join(__dirname, "src") },
+  devServer: { static: path.join(__dirname, "src") },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"],
+        use: ["ts-loader"],
       },
       {
         test: /\.(css|scss)$/,
@@ -29,20 +31,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-        use: ["file-loader"],
-      },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg|otf)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "[name].[ext]",
-              outputPath: "FontsOutput/",
-            },
-          },
-        ],
+        test: /\.(eot|ttf|woff|woff2|png|jpg|gif|svg|pdf)$/,
+        type: "asset",
       },
     ],
   },
@@ -50,9 +40,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "index.html"),
     }),
+    new ESLintPlugin(),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-  }),
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
   ],
 };

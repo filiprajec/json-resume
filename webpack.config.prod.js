@@ -1,5 +1,5 @@
 const path = require("path");
-const webpack = require('webpack');
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
     fallback: { process: "process/browser" },
   },
-  devServer: { contentBase: path.join(__dirname, "src") },
+  devServer: { static: path.join(__dirname, "src") },
   module: {
     rules: [
       {
@@ -51,8 +51,8 @@ module.exports = {
       template: path.join(__dirname, "src", "index.html"),
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-  }),
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
   ],
 };

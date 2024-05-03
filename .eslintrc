@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": ["airbnb", "prettier"],
   "env": {
     "browser": true
@@ -9,7 +9,8 @@
     "react/require-default-props": [0], // disable as it is deprecated to use default props in functional component - instead we add defaults to declaration
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "no-underscore-dangle": [0],
-    "import/prefer-default-export": [0]
+    "import/prefer-default-export": [0],
+    "react/function-component-definition": [0]
   },
   "parserOptions": {
     "ecmaVersion": 2020

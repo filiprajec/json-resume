@@ -1,0 +1,26 @@
+{
+  "include": ["src/**/*", "src/**/*.json", "globals.d.ts"],
+  "exclude": ["node_modules", "webpack.config.js", "webpack.config.prod.js"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "composite": true,
+    "declarationDir": "./types",
+    "tsBuildInfoFile": "./.tsconfig.tsbuildinfo",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "inlineSources": true,
+    "jsx": "react-jsx",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2022"
+  }
+}
