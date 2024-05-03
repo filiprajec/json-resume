@@ -6,12 +6,30 @@ import {
   useRef,
   useContext,
 } from "react";
+import { ResumePaperRef } from "../components";
 
 const initialAccuracy = 0.005;
 const rendersBeforeDecreasingAccuracy = 100;
 const accuracyDecreasePerRender = 1.02;
 
-export const useZoomValue = (paperRefs, dependencies) => {
+interface InitialContext {
+  zoom: number;
+  rendering: boolean;
+  deltaHeight: number;
+}
+
+const initialContext: InitialContext = {
+  zoom: 1,
+  rendering: false,
+  deltaHeight: 0,
+};
+
+const ZoomContext = createContext(initialContext);
+
+export const useZoomValue = (
+  paperRefs: React.RefObject<ResumePaperRef>,
+  dependencies: any[]
+) => {
   const [zoom, setZoom] = useState(1);
   const [rendering, setRendering] = useState(false);
   const [deltaHeight, setDeltaHeight] = useState(0);
@@ -21,17 +39,29 @@ export const useZoomValue = (paperRefs, dependencies) => {
   const isBrowser = typeof window !== "undefined";
 
   const getZoomAndDeltaHeight = useCallback(() => {
+    if (
+      !paperRefs.current ||
+      !paperRefs.current.inner ||
+      !paperRefs.current.outer
+    ) {
+      return [1, 0];
+    }
+
     const deltaHeight_ =
-      paperRefs.current.outer.clientHeight -
-      paperRefs.current.inner.clientHeight;
+      paperRefs.current?.outer.clientHeight -
+      paperRefs.current?.inner.clientHeight;
     const zoom_ =
-      paperRefs.current.outer.clientHeight /
-      paperRefs.current.inner.clientHeight;
+      paperRefs.current?.outer.clientHeight /
+      paperRefs.current?.inner.clientHeight;
     return [zoom_, deltaHeight_];
   }, [paperRefs]);
 
   const setTopPaperOffset = useCallback(
     (deltaHeight_) => {
+      if (!paperRefs.current || !paperRefs.current.inner) {
+        return;
+      }
+
       const { inner } = paperRefs.current;
       inner.style.marginTop = `${deltaHeight_ / 2}px`;
     },
@@ -90,10 +120,24 @@ export const useZoomValue = (paperRefs, dependencies) => {
   return { zoom, rendering, deltaHeight };
 };
 
-const getInitialContext = () => ({ zoom: 1, rendering: false, deltaHeight: 0 });
+interface ZoomProviderProps {
+  children: React.ReactNode;
+  paperRefs: React.RefObject<ResumePaperRef>;
+  dependencies: any[];
+}
 
-export const ZoomContext = createContext(getInitialContext());
-export const ZoomProvider = ZoomContext.Provider;
+export const ZoomProvider = ({
+  children,
+  paperRefs,
+  dependencies,
+}: ZoomProviderProps) => {
+  const zoomValue = useZoomValue(paperRefs, dependencies);
+
+  return (
+    <ZoomContext.Provider value={zoomValue}>{children}</ZoomContext.Provider>
+  );
+};
+
 export const useZoom = () => {
   const context = useContext(ZoomContext);
   if (!context) {

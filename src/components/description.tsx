@@ -4,8 +4,7 @@ import styled from "styled-components";
 import { BubbleStack } from "./bubble-stack";
 import { RatingBar } from "./rating-bar";
 import { ListStack } from "./list-stack";
-import { styles as globalStyles } from "../styles";
-import { useZoom } from "../context";
+import { useTheme, useZoom } from "../context";
 
 export type DescriptionStyles = {
   container?: React.CSSProperties;
@@ -41,28 +40,26 @@ export const Description = ({
   ID = "0",
 }: DescriptionProps) => {
   const { zoom } = useZoom();
+  const theme = useTheme();
 
   return (
     <Container
-      padding={`${globalStyles.padding.px.small * zoom}px`}
+      padding={`${theme.padding.px.sm * zoom}px`}
       style={styles.container}
     >
       <Heading
-        fontSize={`${globalStyles.fontSize.px.h5 * zoom}px`}
+        fontSize={`${theme.fontSize.px.h5 * zoom}px`}
         style={styles.heading}
       >
         {heading}
       </Heading>
       {date && (
-        <Date
-          fontSize={`${globalStyles.fontSize.px.p * zoom}px`}
-          style={styles.date}
-        >
+        <Date fontSize={`${theme.fontSize.px.p * zoom}px`} style={styles.date}>
           {date}
         </Date>
       )}
       {rating && (
-        <VerticalPadding padding={`${globalStyles.padding.px.small * zoom}px`}>
+        <VerticalPadding padding={`${theme.padding.px.sm * zoom}px`}>
           <RatingBar
             rating={rating}
             value={ratingBarData[ID]?.value ?? 0}
@@ -70,16 +67,18 @@ export const Description = ({
           />
         </VerticalPadding>
       )}
-      <DescriptionText
-        fontSize={`${globalStyles.fontSize.px.p * zoom}px`}
-        style={{
-          paddingTop: globalStyles.padding.px.xxsmall * zoom,
-          opacity: 0.7,
-          ...styles.text,
-        }}
-      >
-        {description}
-      </DescriptionText>
+      {description && (
+        <DescriptionText
+          fontSize={`${theme.fontSize.px.p * zoom}px`}
+          style={{
+            paddingTop: theme.padding.px.sm * zoom,
+            opacity: 0.7,
+            ...styles.text,
+          }}
+        >
+          {description}
+        </DescriptionText>
+      )}
       <ListStack
         stack={list}
         style={{ marginBottom: 2 * zoom, ...styles.list }}

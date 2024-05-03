@@ -1,7 +1,6 @@
-import React, { forwardRef, useContext } from "react";
+import React, { forwardRef } from "react";
 
-import { useZoom, useTheme } from "../context";
-import { styles } from "../styles";
+import { useZoom, useTheme, increaseShade } from "../context";
 import { Cell } from "./cell";
 
 interface TimeLineMarkerProps {
@@ -12,27 +11,30 @@ interface TimeLineMarkerProps {
 export const TimeLineMarker = forwardRef<HTMLDivElement, TimeLineMarkerProps>(
   ({ size = 10, style }, ref) => {
     const { zoom } = useZoom();
-    const { theme } = useTheme();
-
-    const styleMarkerCell = {
-      padding: styles.padding.px.small * zoom,
-      fontSize: styles.fontSize.px.h5 * zoom,
-    };
-
-    const styleMarker = {
-      display: "inline-block",
-      width: size,
-      height: size,
-      borderRadius: "50%",
-      border: `2px solid ${theme.dark}`,
-      backgroundColor: theme.secondary,
-      zIndex: 1,
-      ...style,
-    };
+    const theme = useTheme();
 
     return (
-      <Cell fraction={1} style={styleMarkerCell}>
-        <div style={styleMarker} ref={ref} />
+      <Cell
+        fraction={1}
+        style={{
+          padding: theme.padding.px.sm * zoom,
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            display: "inline-block",
+            width: size,
+            height: size * 2,
+            borderRadius: "1rem",
+            border: `2px solid ${theme.colorScheme.black}`,
+            backgroundColor:
+              theme.colorScheme.secondary[theme.colorScheme.secondaryShade],
+            zIndex: 1,
+            ...style,
+          }}
+          ref={ref}
+        />
       </Cell>
     );
   }

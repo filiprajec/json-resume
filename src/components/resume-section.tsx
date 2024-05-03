@@ -1,15 +1,3 @@
-import {
-  AcademicCapIcon,
-  CheckBadgeIcon,
-  BookOpenIcon,
-  ChatBubbleLeftIcon,
-  FaceSmileIcon,
-  HeartIcon,
-  BoltIcon,
-  StarIcon,
-  CommandLineIcon,
-} from "@heroicons/react/24/outline";
-
 import { v4 as uuidv4 } from "uuid";
 import {
   ResumeSchemaAwards,
@@ -25,8 +13,20 @@ import {
   ResumeSchemaWork,
   ResumeSectionInstance,
   ResumeSectionName,
+  TablerIcon,
 } from "../types";
-import { IconBuildingEstate } from "@tabler/icons-react";
+import {
+  IconBadge,
+  IconBolt,
+  IconBook,
+  IconBuildingEstate,
+  IconCode,
+  IconHeart,
+  IconMoodSmile,
+  IconSchool,
+  IconSpeakerphone,
+  IconStar,
+} from "@tabler/icons-react";
 
 export const headingsDefault: Record<ResumeSectionName, string> = {
   work: "Experience",
@@ -119,18 +119,18 @@ export class ResumeSection implements ResumeSectionInstance {
     return this.length > 0;
   }
 
-  get icon(): JSX.Element {
-    return this.typeSwitchGetter({
-      work: () => <IconBuildingEstate />,
-      volunteer: () => <HeartIcon />,
-      education: () => <AcademicCapIcon />,
-      awards: () => <StarIcon />,
-      publications: () => <BookOpenIcon />,
-      skills: () => <CommandLineIcon />,
-      languages: () => <ChatBubbleLeftIcon />,
-      interests: () => <FaceSmileIcon />,
-      references: () => <CheckBadgeIcon />,
-      projects: () => <BoltIcon />,
+  get icon(): TablerIcon {
+    return this.typeSwitchGetter<TablerIcon>({
+      work: () => IconBuildingEstate,
+      volunteer: () => IconHeart,
+      education: () => IconSchool,
+      awards: () => IconStar,
+      publications: () => IconBook,
+      skills: () => IconCode,
+      languages: () => IconSpeakerphone,
+      interests: () => IconMoodSmile,
+      references: () => IconBadge,
+      projects: () => IconBolt,
     });
   }
 

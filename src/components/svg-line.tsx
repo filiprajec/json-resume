@@ -36,7 +36,11 @@ export const SVGLine = ({
         y1={getNegativeOffset(y1, y2)}
         x2={x2 - x1 + getNegativeOffset(x1, x2)}
         y2={y2 - y1 + getNegativeOffset(y1, y2)}
-        style={{ stroke: color, strokeWidth: width * 2, ...style }}
+        style={{
+          stroke: color,
+          strokeWidth: width * 2,
+          ...style,
+        }}
       />
     </svg>
   );

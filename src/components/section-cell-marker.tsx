@@ -1,7 +1,6 @@
 import React from "react";
 
-import { useZoom } from "../context";
-import { styles } from "../styles";
+import { useTheme, useZoom } from "../context";
 import { Cell } from "./cell";
 
 interface SectionCellMarkerProps {
@@ -10,17 +9,18 @@ interface SectionCellMarkerProps {
 
 export const SectionCellMarker = ({ style }: SectionCellMarkerProps) => {
   const { zoom } = useZoom();
-
-  const styleMarkerCell = {
-    padding: styles.padding.px.small * zoom,
-    fontSize: styles.fontSize.px.h5 * zoom,
-    ...style,
-  };
-
+  const theme = useTheme();
   const marker = "•";
 
   return (
-    <Cell fraction={1} style={styleMarkerCell}>
+    <Cell
+      fraction={1}
+      style={{
+        padding: theme.padding.px.sm * zoom,
+        fontSize: theme.fontSize.px.h5 * zoom,
+        ...style,
+      }}
+    >
       {marker}
     </Cell>
   );

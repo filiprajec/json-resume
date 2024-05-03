@@ -3,11 +3,10 @@ import { useRef } from "react";
 import { ContentCell, ContentCellStyles } from "./content-cell";
 import { Description, DescriptionStyles } from "./description";
 import { MarkerJoin } from "./marker-join";
-import { styles as globalStyles } from "../styles/styles";
 import { TimeLineDate } from "./time-line-date";
 import { TimeLineMarker } from "./time-line-marker";
 import { useMarkerCoordinates } from "./use-marker-coordinates";
-import { useZoom } from "../context";
+import { useTheme, useZoom } from "../context";
 import { RatingBarData, ResumeSectionInstance } from "../types";
 import { ColumnLayout } from "./column-layout";
 import { Cell } from "./cell";
@@ -21,6 +20,7 @@ interface TimeLineCellProps {
     contentCell?: ContentCellStyles;
     description?: DescriptionStyles;
   };
+  showIcon?: boolean;
 }
 
 export const TimeLineCell = ({
@@ -32,25 +32,27 @@ export const TimeLineCell = ({
   },
   outlined = false,
   styles = {},
+  showIcon = true,
 }: TimeLineCellProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const markerCoordinates = useMarkerCoordinates(parentRef, markerRefs);
   const { zoom } = useZoom();
-
-  // merge with defaults
+  const theme = useTheme();
   const stylesContentCell = {
     ...styles.contentCell,
     container: {
-      padding: globalStyles.padding.px.medium * zoom,
+      padding: theme.padding.px.md * zoom,
       ...styles.contentCell?.container,
     },
+    headingOuter: {
+      marginLeft: theme.padding.px.sm * 5 * zoom,
+    },
     heading: {
-      fontSize: globalStyles.fontSize.px.h3 * zoom,
+      fontSize: theme.fontSize.px.h3 * zoom,
       ...styles.contentCell?.heading,
     },
   };
-
   const markerSizePx = Math.round(12 * zoom);
 
   if (!data) {
@@ -67,6 +69,8 @@ export const TimeLineCell = ({
       outlined={outlined}
       ref={parentRef}
       styles={stylesContentCell}
+      headingOffset={5 / 28}
+      showIcon={showIcon}
     >
       {subheadings.map((subheading, index) => (
         <div key={`timeline-cell-${dataIDs[index]}`}>
@@ -78,7 +82,7 @@ export const TimeLineCell = ({
                 markerRefs.current[index] = ref;
               }}
             />
-            <Cell fraction={26}>
+            <Cell fraction={23}>
               <Description
                 heading={subheading}
                 rating={ratings[index]}
@@ -98,6 +102,7 @@ export const TimeLineCell = ({
                 first: markerCoordinates[index - 1],
                 second: markerCoordinates[index],
               }}
+              color={theme.colors.black}
             />
           )}
         </div>

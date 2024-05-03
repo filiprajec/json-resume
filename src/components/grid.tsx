@@ -6,10 +6,7 @@ import React, {
   useMemo,
 } from "react";
 
-import classes from "./layouts.module.scss";
 import { GridProvider } from "../context/grid-context";
-
-const { grid } = classes;
 
 interface GridProps {
   outlineColor?: string;
@@ -64,9 +61,7 @@ export const Grid = forwardRef<HTMLDivElement, GridProps>(
 
     return (
       <GridProvider value={value}>
-        <div className={grid} ref={gridRef}>
-          {children}
-        </div>
+        <div ref={gridRef}>{children}</div>
       </GridProvider>
     );
   }

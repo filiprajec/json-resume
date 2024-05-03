@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 import { SVGLine } from "./svg-line";
@@ -24,11 +23,13 @@ interface MarkerJoinProps {
     second: Coordinate;
   } | null;
   markerSize?: number;
+  color?: string;
 }
 
 export const MarkerJoin = ({
   coordinates = null,
   markerSize = 10,
+  color,
 }: MarkerJoinProps) => {
   if (
     coordinates == null ||
@@ -45,6 +46,7 @@ export const MarkerJoin = ({
         y1={coordinates.first.center.y + markerSize / 2}
         y2={coordinates.second.center.y - markerSize / 2}
         width={markerJoinWidth}
+        color={color}
       />
     </Join>
   );

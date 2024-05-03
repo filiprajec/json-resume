@@ -1,8 +1,6 @@
 import React, { forwardRef } from "react";
 
-import classes from "./layouts.module.scss";
-
-const { container, vertical } = classes;
+import * as classes from "./layouts.module.css";
 
 interface RowLayoutProps {
   children?: React.ReactNode;
@@ -11,7 +9,11 @@ interface RowLayoutProps {
 
 export const RowLayout = forwardRef<HTMLDivElement, RowLayoutProps>(
   ({ children, style }, ref) => (
-    <div className={[container, vertical].join(" ")} style={style} ref={ref}>
+    <div
+      className={[classes.container, classes.gridVertical].join(" ")}
+      style={style}
+      ref={ref}
+    >
       {children}
     </div>
   )

@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 
-import { useZoom } from "../context";
+import { useTheme, useZoom } from "../context";
 import { Bubble } from "./bubble";
-import { styles } from "../styles/styles";
 
 interface BubbleStack {
   stack: string[];
@@ -12,6 +11,7 @@ interface BubbleStack {
 
 export const BubbleStack = ({ stack, styleBubble, style }: BubbleStack) => {
   const { zoom } = useZoom();
+  const theme = useTheme();
 
   return (
     <div style={style}>
@@ -22,7 +22,7 @@ export const BubbleStack = ({ stack, styleBubble, style }: BubbleStack) => {
           )}`}
         >
           <Bubble style={styleBubble}>
-            <p style={{ fontSize: styles.fontSize.px.p * zoom }}>{eachPoint}</p>
+            <p style={{ fontSize: theme.fontSize.px.p * zoom }}>{eachPoint}</p>
           </Bubble>
         </Fragment>
       ))}

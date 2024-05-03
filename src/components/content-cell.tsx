@@ -1,13 +1,16 @@
-import React, { useContext, forwardRef } from "react";
+import React, { forwardRef } from "react";
 
-import { ThemeContext, ZoomContext } from "../context";
+import { useTheme, useZoom } from "../context";
 import { LayoutWrapper } from "./layout-wrapper";
-import { styles } from "../styles";
 import { Cell } from "./cell";
 import { RowLayout } from "./row-layout";
+import { ColumnLayout } from "./column-layout";
+import { TablerIcon } from "../types";
 
-const getStylesDefault = (zoom, theme) => {
-  const fontSizeDefault = styles.fontSize.px.h3 * zoom;
+const useDefaultStyles = () => {
+  const { zoom } = useZoom();
+  const theme = useTheme();
+  const fontSizeDefault = theme.fontSize.px.h3 * zoom;
 
   return {
     container: {
@@ -15,24 +18,23 @@ const getStylesDefault = (zoom, theme) => {
     },
     heading: {
       fontSize: fontSizeDefault,
-      marginLeft: fontSizeDefault * 0.2,
-      marginRight: fontSizeDefault * 0.2,
     },
     headingOuter: {
       display: "inline-flex",
+      alignItems: "center",
       textAlign: "left",
       justifyContent: "left",
       fontSize: fontSizeDefault,
-      fontWeight: 900,
-      paddingBottom: styles.padding.px.small * zoom,
-      paddingLeft: styles.padding.px.small * zoom,
+      gap: theme.padding.px.md * zoom,
+      paddingBottom: theme.padding.px.sm * zoom,
+      paddingLeft: theme.padding.px.sm * zoom,
     },
     headingHighlight: {
       position: "absolute",
       height: fontSizeDefault * 0.5,
       width: "100%",
       top: fontSizeDefault * 0.5,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.colorScheme.primary,
       zIndex: -1,
     },
     headingContainer: {
@@ -41,12 +43,11 @@ const getStylesDefault = (zoom, theme) => {
     },
     icon: {
       position: "relative",
-      display: "inline-block",
+      display: "flex",
       width: fontSizeDefault,
       height: fontSizeDefault,
       left: 0,
       top: 0,
-      marginRight: styles.padding.px.small * zoom,
       zIndex: 0,
     },
   };
@@ -64,13 +65,14 @@ export type ContentCellStyles = {
 interface ContentCellProps {
   heading: string;
   showHeading?: boolean;
-  icon?: React.ReactNode;
+  icon?: TablerIcon;
   showIcon?: boolean;
   columnLayout?: boolean;
   outlined?: boolean;
   outlinedHeading?: boolean;
   styles: ContentCellStyles;
   children: React.ReactNode;
+  headingOffset?: number;
 }
 
 export const ContentCell = forwardRef<HTMLDivElement, ContentCellProps>(
@@ -85,12 +87,11 @@ export const ContentCell = forwardRef<HTMLDivElement, ContentCellProps>(
       outlinedHeading = false,
       styles,
       children = null,
+      headingOffset,
     },
     ref
   ) => {
-    const { zoom } = useContext(ZoomContext);
-    const { theme } = useContext(ThemeContext);
-    const stylesDefault = getStylesDefault(zoom, theme);
+    const stylesDefault = useDefaultStyles();
     const styles_: ContentCellStyles = {};
 
     Object.keys(stylesDefault).forEach((styleKey) => {
@@ -101,13 +102,28 @@ export const ContentCell = forwardRef<HTMLDivElement, ContentCellProps>(
       <Cell outlined={outlined} style={styles_.container} ref={ref}>
         <RowLayout>
           {heading && showHeading && (
-            <Cell outlined={outlinedHeading} style={styles_.headingOuter}>
-              {showIcon && <div style={styles_.icon}>{icon}</div>}
-              <div style={styles_.headingContainer}>
-                <div style={styles_.headingHighlight} />
-                <h3 style={styles_.heading}>{heading}</h3>
-              </div>
-            </Cell>
+            <>
+              <ColumnLayout>
+                {headingOffset && <Cell fraction={headingOffset}></Cell>}
+                <Cell
+                  fraction={headingOffset ? 1 - headingOffset : 1}
+                  outlined={outlinedHeading}
+                  style={styles_.headingOuter}
+                >
+                  {showIcon && icon && (
+                    <div style={styles_.icon}>
+                      {React.createElement(icon, {
+                        size: styles_.icon?.width,
+                      })}
+                    </div>
+                  )}
+                  <div style={styles_.headingContainer}>
+                    <div style={styles_.headingHighlight} />
+                    <h3 style={styles_.heading}>{heading}</h3>
+                  </div>
+                </Cell>
+              </ColumnLayout>
+            </>
           )}
           <LayoutWrapper columnLayout={columnLayout}>{children}</LayoutWrapper>
         </RowLayout>

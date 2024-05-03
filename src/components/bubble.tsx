@@ -9,16 +9,21 @@ interface BubbleProps {
 
 export const Bubble = ({ children, style }: BubbleProps) => {
   const { zoom } = useZoom();
-  const { theme } = useTheme();
-  const styleBubble = {
-    display: "inline-block",
-    backgroundColor: theme.light,
-    border: `1px solid ${theme.dark}`,
-    borderRadius: "16px",
-    margin: 2 * zoom,
-    padding: `${2 * zoom}px ${4 * zoom}px`,
-    ...style,
-  };
+  const theme = useTheme();
 
-  return <div style={styleBubble}>{children}</div>;
+  return (
+    <div
+      style={{
+        display: "inline-block",
+        backgroundColor: theme.colorScheme.white,
+        border: `1px solid ${theme.colorScheme.black}`,
+        borderRadius: "16px",
+        margin: 2 * zoom,
+        padding: `${2 * zoom}px ${6 * zoom}px`,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
 };

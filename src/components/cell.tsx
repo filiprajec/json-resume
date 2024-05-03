@@ -6,9 +6,7 @@ import React, {
 } from "react";
 
 import { useGrid } from "../context";
-import classes from "./layouts.module.scss";
-
-const { cell } = classes;
+import * as classes from "./layouts.module.css";
 
 interface CellLayoutProps {
   children?: React.ReactNode;
@@ -27,9 +25,12 @@ export const Cell = forwardRef<HTMLDivElement, CellLayoutProps>(
     );
     const { outlineColor, outlineWidth } = useGrid();
     const getOutlinedClassFromProp = (outlinedProp) =>
-      outlinedProp ? classes.outlined : "";
+      outlinedProp ? classes.cellOutlined : "";
 
-    const cellClassName = [cell, getOutlinedClassFromProp(outlined)].join(" ");
+    const cellClassName = [
+      classes.cell,
+      getOutlinedClassFromProp(outlined),
+    ].join(" ");
 
     const cellStyle = {
       flex: fraction,

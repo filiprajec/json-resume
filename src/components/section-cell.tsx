@@ -1,8 +1,7 @@
 import { ContentCell, ContentCellStyles } from "./content-cell";
 import { Description, DescriptionStyles } from "./description";
 import { SectionCellMarker } from "./section-cell-marker";
-import { styles as globalStyles } from "../styles";
-import { useZoom } from "../context";
+import { useTheme, useZoom } from "../context";
 import { ResumeSettings } from "../hooks";
 import { ColumnLayout } from "./column-layout";
 import { Cell } from "./cell";
@@ -36,20 +35,18 @@ export const SectionCell = ({
   styles = {},
 }: SectionCellProps) => {
   const { zoom } = useZoom();
-
-  // merge with defaults
+  const theme = useTheme();
   const stylesContentCell = {
     ...styles.contentCell,
     container: {
-      padding: globalStyles.padding.px.medium * zoom,
+      padding: theme.padding.px.md * zoom,
       ...styles.contentCell?.container,
     },
     heading: {
-      fontSize: globalStyles.fontSize.px.h3 * zoom,
+      fontSize: theme.fontSize.px.h3 * zoom,
       ...styles.contentCell?.heading,
     },
   };
-
   const { subheadings, descriptions, dates, tags, lists, ratings, dataIDs } =
     data;
 
@@ -59,7 +56,6 @@ export const SectionCell = ({
       showHeading={showHeading}
       icon={data.icon}
       showIcon={showIcon}
-      // padding={showHeading}
       outlined={outlined}
       outlinedHeading={innerOutline}
       columnLayout={columnLayout}

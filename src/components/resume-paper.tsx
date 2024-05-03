@@ -7,7 +7,6 @@ import { useZoom, useTheme } from "../context";
 import { TimeLineCell } from "./time-line-cell";
 import { SectionCell } from "./section-cell";
 import { BasicsCell } from "./basics-cell";
-import { styles } from "../styles/styles";
 import { ResumeSections, ResumeSettings } from "../hooks";
 import { ResumeSchema } from "../types";
 import { ColumnLayout } from "./column-layout";
@@ -26,7 +25,12 @@ interface ResumePaperProps {
   isLoading?: boolean;
 }
 
-export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
+export type ResumePaperRef = {
+  outer: HTMLDivElement | null;
+  inner: HTMLDivElement | null;
+};
+
+export const ResumePaper = forwardRef<ResumePaperRef, ResumePaperProps>(
   (
     {
       resumeSections = {},
@@ -38,19 +42,12 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
     },
     ref
   ) => {
-    const { zoom } = useZoom();
-    const { theme } = useTheme();
+    const { zoom, rendering } = useZoom();
+    const theme = useTheme();
     const outerRef = useRef<HTMLDivElement>(null);
     const innerRef = useRef<HTMLDivElement>(null);
 
-    useImperativeHandle<
-      HTMLDivElement | null,
-      // @ts-ignore --- abuse of the useImperativeHandle hook
-      {
-        outer: HTMLDivElement | null;
-        inner: HTMLDivElement | null;
-      }
-    >(
+    useImperativeHandle<ResumePaperRef, ResumePaperRef>(
       ref,
       () => ({
         outer: outerRef.current,
@@ -61,19 +58,25 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
 
     if (errorMessage !== "") {
       return (
-        <Paper background={styles.colors.basic.paper}>
+        <Paper background={theme.colors.white}>
           <ErrorPage />
         </Paper>
       );
     }
 
     return (
-      <Paper background={styles.colors.basic.paper}>
-        {isLoading && <LoadingPage />}
+      <Paper background={theme.colors.white}>
+        {(isLoading || rendering) && <LoadingPage />}
         <PaperInner margin="20px" ref={outerRef}>
           <Grid ref={innerRef}>
             <ColumnLayout>
-              <Cell fraction={1} style={{ backgroundColor: theme.primary }}>
+              <Cell
+                fraction={1}
+                style={{
+                  backgroundColor:
+                    theme.colorScheme.primary[theme.colorScheme.primaryShade],
+                }}
+              >
                 <RowLayout>
                   {resumeJson?.basics && (
                     <BasicsCell basics={resumeJson.basics} />
@@ -121,12 +124,14 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
                             <TimeLineCell
                               heading={headings.work}
                               data={resumeSections.work}
+                              showIcon={false}
                             />
                           )}
                           {resumeSections?.education?.hasContent() && (
                             <TimeLineCell
                               heading={headings.education}
                               data={resumeSections.education}
+                              showIcon={false}
                             />
                           )}
 
@@ -134,12 +139,14 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
                             <SectionCell
                               heading={headings.awards}
                               data={resumeSections.awards}
+                              showIcon={false}
                             />
                           )}
                           {resumeSections?.publications?.hasContent() && (
                             <SectionCell
                               heading={headings.publications}
                               data={resumeSections.publications}
+                              showIcon={false}
                             />
                           )}
                           {resumeSections?.projects?.hasContent() && (
@@ -147,12 +154,14 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
                               heading={headings.projects}
                               data={resumeSections.projects}
                               ratingBarData={ratingBarData}
+                              showIcon={false}
                             />
                           )}
                           {resumeSections?.volunteer?.hasContent() && (
                             <TimeLineCell
                               heading={headings.volunteer}
                               data={resumeSections.volunteer}
+                              showIcon={false}
                             />
                           )}
                         </RowLayout>
@@ -165,6 +174,7 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
                       heading={headings.languages}
                       data={resumeSections.languages}
                       ratingBarData={ratingBarData}
+                      showIcon={false}
                     />
                   )}
 
@@ -172,6 +182,7 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
                     <SectionCell
                       heading={headings.references}
                       data={resumeSections.references}
+                      showIcon={false}
                     />
                   )}
                 </RowLayout>
@@ -184,19 +195,27 @@ export const ResumePaper = forwardRef<HTMLDivElement, ResumePaperProps>(
   }
 );
 
-const LoadingPage = () => (
-  <FullPage background={styles.colors.basic.paper}>
-    <Rings color="#c8c8c8" height={150} width={150} />
-  </FullPage>
-);
+const LoadingPage = () => {
+  const theme = useTheme();
 
-const ErrorPage = () => (
-  <FullPage background={styles.colors.basic.paper}>
-    <div style={{ height: 40, width: 40, color: "#c8c8c8" }}>
-      <ExclamationCircleIcon />
-    </div>
-  </FullPage>
-);
+  return (
+    <FullPage background={theme.colors.white} style={{ zIndex: 2 }}>
+      <Rings color="#c8c8c8" height={150} width={150} />
+    </FullPage>
+  );
+};
+
+const ErrorPage = () => {
+  const theme = useTheme();
+
+  return (
+    <FullPage background={theme.colors.white}>
+      <div style={{ height: 40, width: 40, color: "#c8c8c8" }}>
+        <ExclamationCircleIcon />
+      </div>
+    </FullPage>
+  );
+};
 
 const Paper = styled.div<{
   top?: React.CSSProperties["top"];
@@ -210,7 +229,7 @@ const Paper = styled.div<{
   margin: 0.25cm auto calc(0.25cm + ${(props) => props.top ?? "0cm"}) auto;
   box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.1);
   background: ${(props) => props.background};
-  font-family: "Karrik";
+  font-family: "Inter";
   line-height: 1.1;
   transition: all 0.1s ease-in-out;
   overflow: hidden;
@@ -227,6 +246,20 @@ const Paper = styled.div<{
   h5,
   h6,
   p {
+    margin: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Karrik";
+  }
+
+  p {
+    font-family: "Inter";
     margin: 0;
   }
 

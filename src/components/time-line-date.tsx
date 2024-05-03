@@ -1,5 +1,4 @@
-import { useZoom } from "../context";
-import { styles } from "../styles";
+import { increaseShade, useTheme, useZoom } from "../context";
 import { Cell } from "./cell";
 
 interface TimeLineDateProps {
@@ -8,18 +7,25 @@ interface TimeLineDateProps {
 
 export const TimeLineDate = ({ date = "" }: TimeLineDateProps) => {
   const { zoom } = useZoom();
+  const theme = useTheme();
 
   return (
     <Cell
       fraction={4}
-      style={{
-        padding: styles.padding.px.small * zoom,
-        fontSize: styles.fontSize.px.p * zoom,
-        color: styles.colors.basic.gray,
-        textAlign: "right",
-      }}
+      style={{ textAlign: "left", padding: theme.padding.px.sm * zoom }}
     >
-      {date}
+      <span
+        style={{
+          fontSize: theme.fontSize.px.p * zoom,
+          color:
+            theme.colorScheme.secondary[
+              increaseShade(theme.colorScheme.secondaryShade, 4)
+            ],
+          fontWeight: 700,
+        }}
+      >
+        {date}
+      </span>
     </Cell>
   );
 };

@@ -1,3 +1,9 @@
+import { IconProps, Icon } from "@tabler/icons-react";
+
+export type TablerIcon = React.ForwardRefExoticComponent<
+  Omit<IconProps, "ref"> & React.RefAttributes<Icon>
+>;
+
 export type RatingBarData = {
   name: string;
   value: string | number;
@@ -52,7 +58,7 @@ export interface ResumeSectionInstance {
   typeSwitchGetter<T>(switches: Record<ResumeSectionName, () => T>): T;
   get length(): number;
   hasContent(): boolean;
-  get icon(): JSX.Element;
+  get icon(): TablerIcon;
   get subheadings(): string[];
   get descriptions(): string[];
   get dates(): string[];

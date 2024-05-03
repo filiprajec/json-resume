@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { useZoom, useTheme } from "../context";
-import { styles } from "../styles";
 
 interface RatingBarProps {
   rating?: string;
@@ -16,18 +15,23 @@ export const RatingBar = ({
   style = {},
 }: RatingBarProps) => {
   const { zoom } = useZoom();
-  const { theme } = useTheme();
+  const theme = useTheme();
   const valueInt = parseInt(value.toString(), 10) ?? 0;
   return (
     <div style={style}>
       {valueInt > 0 && (
         <Bar theme={theme} height={`${15 * zoom}px`}>
-          <Progress color={theme.secondary} percentage={(valueInt / 5) * 100} />
+          <Progress
+            color={
+              theme.colorScheme.secondary[theme.colorScheme.secondaryShade]
+            }
+            percentage={(valueInt / 5) * 100}
+          />
         </Bar>
       )}
       <Heading
         textAlign={valueInt > 0 ? "right" : "left"}
-        fontSize={`${styles.fontSize.px.p * zoom}px`}
+        fontSize={`${theme.fontSize.px.p * zoom}px`}
       >
         {rating}
       </Heading>
