@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 
-import { useZoom, useTheme, increaseShade } from "../context";
+import { useZoom, useTheme } from "../context";
 import { Cell } from "./cell";
 
 interface TimeLineMarkerProps {
@@ -25,9 +25,9 @@ export const TimeLineMarker = forwardRef<HTMLDivElement, TimeLineMarkerProps>(
             position: "relative",
             display: "inline-block",
             width: size,
-            height: size * 2,
+            height: size,
             borderRadius: "1rem",
-            border: `2px solid ${theme.colorScheme.black}`,
+            border: `1px solid ${theme.colorScheme.black}`,
             backgroundColor:
               theme.colorScheme.secondary[theme.colorScheme.secondaryShade],
             zIndex: 1,

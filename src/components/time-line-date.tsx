@@ -1,4 +1,4 @@
-import { increaseShade, useTheme, useZoom } from "../context";
+import { useTheme, useZoom } from "../context";
 import { Cell } from "./cell";
 
 interface TimeLineDateProps {
@@ -17,10 +17,7 @@ export const TimeLineDate = ({ date = "" }: TimeLineDateProps) => {
       <span
         style={{
           fontSize: theme.fontSize.px.p * zoom,
-          color:
-            theme.colorScheme.secondary[
-              increaseShade(theme.colorScheme.secondaryShade, 4)
-            ],
+          color: theme.colors.gray[7],
           fontWeight: 700,
         }}
       >

@@ -38,7 +38,7 @@ export const SVGLine = ({
         y2={y2 - y1 + getNegativeOffset(y1, y2)}
         style={{
           stroke: color,
-          strokeWidth: width * 2,
+          strokeWidth: width,
           ...style,
         }}
       />

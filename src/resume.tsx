@@ -1,5 +1,4 @@
-import "./styles/styles.module.css";
-import "./styles/fonts/Karrik/import.css";
+import "./assets/fonts/Karrik/import.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -7,11 +6,9 @@ import "@fontsource/inter/700.css";
 import "open-color/open-color.css";
 
 import { useRef, useMemo } from "react";
-import "core-js/stable";
-import "regenerator-runtime/runtime";
 import { createGlobalStyle } from "styled-components";
 
-import { useZoomValue, ZoomProvider, useTheme } from "./context";
+import { ZoomProvider, useTheme } from "./context";
 import {
   useResumeJson,
   useResumeSections,
@@ -48,8 +45,7 @@ export const Resume = () => {
   const { json, loading, error } = useResumeJson(jsonUrl);
   const sections = useResumeSections(json);
   const { settings, setSettings } = useResumeSettings(sections);
-  const resumePaperRefs = useRef<ResumePaperRef>(null);
-  const resumePaperRefsPage2 = useRef<ResumePaperRef>(null);
+  const resumePaperRef = useRef<ResumePaperRef>(null);
   const dependencies = useMemo(
     () => [sections, settings.headings, settings.ratingBarData],
     [sections, settings.headings, settings.ratingBarData]
@@ -69,38 +65,35 @@ export const Resume = () => {
         errorMessage={error}
         isLoading={isLoading}
       />
-      <ZoomProvider paperRefs={resumePaperRefs} dependencies={dependencies}>
+      <ZoomProvider paperRefs={resumePaperRef} dependencies={dependencies}>
         <ResumePaper
           resumeSections={{
             work: sections?.work,
+            interests: sections?.interests,
             skills: sections?.skills,
-            projects: sections?.projects,
-            awards: sections?.awards,
-            publications: sections?.publications,
-            languages: sections?.languages,
-            references: sections?.references,
           }}
           resumeJson={json}
           headings={settings.headings}
           ratingBarData={settings.ratingBarData}
           errorMessage={error}
           isLoading={isLoading}
-          ref={resumePaperRefs}
+          ref={resumePaperRef}
         />
-      </ZoomProvider>
-      <ZoomProvider paperRefs={resumePaperRefs} dependencies={dependencies}>
         <ResumePaper
           resumeSections={{
             education: sections?.education,
             volunteer: sections?.volunteer,
-            interests: sections?.interests,
+            projects: sections?.projects,
+            awards: sections?.awards,
+            publications: sections?.publications,
+            languages: sections?.languages,
+            references: sections?.references,
           }}
           resumeJson={{ ...json, basics: undefined }}
           headings={settings.headings}
           ratingBarData={settings.ratingBarData}
           errorMessage={error}
           isLoading={isLoading}
-          ref={resumePaperRefsPage2}
         />
       </ZoomProvider>
     </>

@@ -9,7 +9,7 @@ module.exports = {
   mode: process.env.NODE_ENV || "development",
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
-    fallback: { process: "process/browser" },
+    fallback: { process: "process/browser", buffer: false },
     extensions: [".tsx", ".ts", ".js", ".json"],
   },
   devServer: { static: path.join(__dirname, "src") },
