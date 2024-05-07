@@ -1,37 +1,23 @@
-import React, { Fragment } from "react";
-
-import { useTheme, useZoom } from "../context";
+import { List } from "@mantine/core";
 
 interface ListStackProps {
-  stack: string[];
-  bullet?: string;
-  style?: React.CSSProperties;
+  stack?: string[];
 }
 
-export const ListStack = ({ stack = [], style }: ListStackProps) => {
-  const { zoom } = useZoom();
-  const theme = useTheme();
+export const ListStack = ({ stack }: ListStackProps) => {
+  if (!stack || stack.length === 0) return null;
 
   return (
-    <ul
-      style={{
-        marginBlockStart: "0.25rem",
-        marginBlockEnd: 0,
-        paddingInlineStart: "1rem",
-        ...style,
-      }}
-    >
+    <List>
       {stack.map((eachPoint) => (
-        <Fragment
+        <List.Item
           key={`list-member-${eachPoint.substring(0, 5)}-${eachPoint.substring(
             eachPoint.length - 5
           )}`}
         >
-          <li
-            style={{ fontSize: theme.fontSize.px.p * zoom }}
-          >{`${eachPoint}`}</li>
-        </Fragment>
+          {`${eachPoint}`}{" "}
+        </List.Item>
       ))}
-    </ul>
+    </List>
   );
 };

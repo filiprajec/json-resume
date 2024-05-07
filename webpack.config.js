@@ -9,7 +9,7 @@ module.exports = {
   mode: process.env.NODE_ENV || "development",
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
-    fallback: { process: "process/browser", buffer: false },
+    fallback: { process: "process/browser", buffer: false, fs: false },
     extensions: [".tsx", ".ts", ".js", ".json"],
   },
   devServer: { static: path.join(__dirname, "src") },
@@ -26,9 +26,9 @@ module.exports = {
           "style-loader",
           {
             loader: "css-loader",
-            options: {
-              modules: true,
-            },
+            // options: {
+            //   modules: true,
+            // },
           },
           "postcss-loader",
         ],

@@ -1,3 +1,3 @@
-export * from "./theme";
+export * from "./resume-context";
 export * from "./zoom-context";
-export * from "./grid-context";
+export * from "./page-context";

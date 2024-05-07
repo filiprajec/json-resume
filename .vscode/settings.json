@@ -4,6 +4,7 @@
     "**/*.scss",
     "**/*.sass",
     "**/*.less",
-    "node_modules/open-color/open-color.css"
-  ]
+    "node_modules/@mantine/core/styles.css"
+  ],
+  "cSpell.words": ["Tabler"]
 }

@@ -1,140 +1,145 @@
 import {
   createContext,
   useCallback,
-  useEffect,
   useState,
   useRef,
   useContext,
 } from "react";
-import { ResumePaperRef } from "../components";
+import { MantineProvider } from "@mantine/core";
 
-const initialAccuracy = 0.005;
-const rendersBeforeDecreasingAccuracy = 100;
+import { paperTheme } from "../theme";
+import { usePage } from "./page-context";
+
+const initialAccuracy = 0.01;
+const rendersBeforeDecreasingAccuracy = 10;
 const accuracyDecreasePerRender = 1.02;
 
 interface InitialContext {
   zoom: number;
-  rendering: boolean;
   deltaHeight: number;
+  applyCustomZoom: (zoom: number) => void;
+  applyDynamicZoom: () => void;
+  attachOuterRef: (ref: HTMLDivElement | null) => void;
+  attachInnerRef: (ref: HTMLDivElement | null) => void;
 }
 
 const initialContext: InitialContext = {
   zoom: 1,
-  rendering: false,
   deltaHeight: 0,
+  applyCustomZoom: () => {},
+  applyDynamicZoom: () => {},
+  attachOuterRef: () => {},
+  attachInnerRef: () => {},
 };
 
 const ZoomContext = createContext(initialContext);
 
-export const useZoomValue = (
-  paperRefs: React.RefObject<ResumePaperRef>,
-  dependencies: any[]
-) => {
-  const [zoom, setZoom] = useState(1);
-  const [rendering, setRendering] = useState(false);
+interface ZoomProviderProps {
+  children: React.ReactNode;
+}
+
+export const ZoomProvider = ({ children }: ZoomProviderProps) => {
+  const { onCalculatingLayout } = usePage();
+  const [customZoom, setCustomZoom] = useState(1);
   const [deltaHeight, setDeltaHeight] = useState(0);
-  const [renderCount, setRenderCount] = useState(0);
-  const [stoppingAccuracy, setStoppingAccuracy] = useState(initialAccuracy);
-  const skipRender = useRef(false);
+  const [isDynamicZoom, setIsDynamicZoom] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
   const isBrowser = typeof window !== "undefined";
 
-  const getZoomAndDeltaHeight = useCallback(() => {
-    if (
-      !paperRefs.current ||
-      !paperRefs.current.inner ||
-      !paperRefs.current.outer
-    ) {
-      return [1, 0];
+  const applyCustomZoom = useCallback((zoom: number) => {
+    setIsDynamicZoom(false);
+    setCustomZoom(zoom);
+  }, []);
+
+  const applyDynamicZoom = useCallback(() => {
+    setIsDynamicZoom(true);
+    setCustomZoom(1);
+  }, []);
+
+  const attachOuterRef = useCallback((ref: HTMLDivElement | null) => {
+    outerRef.current = ref;
+    if (outerRef.current && innerRef.current) {
+      onCalculatingLayout("calculating");
+      startDynamicZoom();
     }
+  }, []);
 
-    const deltaHeight_ =
-      paperRefs.current?.outer.clientHeight -
-      paperRefs.current?.inner.clientHeight;
-    const zoom_ =
-      paperRefs.current?.outer.clientHeight /
-      paperRefs.current?.inner.clientHeight;
-    return [zoom_, deltaHeight_];
-  }, [paperRefs]);
+  const attachInnerRef = useCallback((ref: HTMLDivElement | null) => {
+    innerRef.current = ref;
+    if (outerRef.current && innerRef.current) {
+      onCalculatingLayout("calculating");
+      startDynamicZoom();
+    }
+  }, []);
 
-  const setTopPaperOffset = useCallback(
-    (deltaHeight_) => {
-      if (!paperRefs.current || !paperRefs.current.inner) {
+  const startDynamicZoom = useCallback(
+    (renderCount: number = 0, stoppingAccuracy: number = initialAccuracy) => {
+      if (
+        !isDynamicZoom ||
+        !isBrowser ||
+        !outerRef.current ||
+        !innerRef.current
+      ) {
         return;
       }
 
-      const { inner } = paperRefs.current;
-      inner.style.marginTop = `${deltaHeight_ / 2}px`;
+      const deltaHeight_ =
+        outerRef.current.clientHeight - innerRef.current.clientHeight;
+      const zoom_ =
+        outerRef.current.clientHeight / innerRef.current.clientHeight;
+      const stoppingCondition =
+        Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ >= 0;
+
+      if (stoppingCondition) {
+        onCalculatingLayout("ready");
+        setDeltaHeight(deltaHeight_);
+        innerRef.current.style.marginTop = `${deltaHeight_ / 2}px`;
+        return;
+      }
+
+      if (zoom_ > 1) {
+        setZoom((prev) => prev + initialAccuracy);
+      } else if (zoom_ < 1) {
+        setZoom((prev) => prev - initialAccuracy);
+      }
+      let newStoppingAccuracy = stoppingAccuracy;
+      if (renderCount > rendersBeforeDecreasingAccuracy) {
+        const accuracyDecreaseFactor =
+          accuracyDecreasePerRender **
+          (renderCount - rendersBeforeDecreasingAccuracy);
+        newStoppingAccuracy = newStoppingAccuracy * accuracyDecreaseFactor;
+      }
+
+      setTimeout(() => {
+        startDynamicZoom(renderCount + 1, newStoppingAccuracy);
+      }, 1);
     },
-    [paperRefs]
+    []
   );
 
-  const updateZoomHelper = useCallback((zoom_) => {
-    if (zoom_ > 1) {
-      setZoom((prev) => prev + initialAccuracy);
-    } else if (zoom_ < 1) {
-      setZoom((prev) => prev - initialAccuracy);
-    }
-  }, []);
-
-  const updateStoppingAccuracyHelper = useCallback((renderCount_) => {
-    const accuracyDecreaseFactor =
-      accuracyDecreasePerRender **
-      (renderCount_ - rendersBeforeDecreasingAccuracy);
-    setStoppingAccuracy((prev) => prev * accuracyDecreaseFactor);
-  }, []);
-
-  useEffect(() => {
-    if (skipRender.current === true) {
-      skipRender.current = false;
-      return;
-    }
-    const paperRefsExist =
-      paperRefs?.current?.inner != null && paperRefs?.current?.outer != null;
-    if (!paperRefsExist) {
-      return;
-    }
-
-    if (!isBrowser) return;
-    const [zoom_, deltaHeight_] = getZoomAndDeltaHeight();
-
-    const stoppingCondition =
-      Math.abs(1 - zoom_) < stoppingAccuracy && deltaHeight_ >= 0;
-
-    if (stoppingCondition) {
-      setRendering(false);
-      setTopPaperOffset(deltaHeight_);
-      setDeltaHeight(deltaHeight_);
-      setRenderCount(0);
-      setStoppingAccuracy(initialAccuracy);
-      skipRender.current = true;
-    } else {
-      setRendering(true);
-      setRenderCount((prev) => prev + 1);
-      updateZoomHelper(zoom_);
-      if (renderCount > rendersBeforeDecreasingAccuracy) {
-        updateStoppingAccuracyHelper(renderCount);
-      }
-    }
-  }, [renderCount, stoppingAccuracy, dependencies]);
-
-  return { zoom, rendering, deltaHeight };
-};
-
-interface ZoomProviderProps {
-  children: React.ReactNode;
-  paperRefs: React.RefObject<ResumePaperRef>;
-  dependencies: any[];
-}
-
-export const ZoomProvider = ({
-  children,
-  paperRefs,
-  dependencies,
-}: ZoomProviderProps) => {
-  const zoomValue = useZoomValue(paperRefs, dependencies);
-
   return (
-    <ZoomContext.Provider value={zoomValue}>{children}</ZoomContext.Provider>
+    <MantineProvider
+      theme={paperTheme(zoom)}
+      getRootElement={() => document.getElementById("theme-root") ?? undefined}
+      cssVariablesSelector="#theme-root"
+    >
+      <div id="theme-root">
+        <ZoomContext.Provider
+          value={{
+            zoom: isDynamicZoom ? zoom : customZoom,
+            deltaHeight,
+            applyCustomZoom,
+            applyDynamicZoom,
+            attachOuterRef,
+            attachInnerRef,
+          }}
+        >
+          {children}
+        </ZoomContext.Provider>
+      </div>
+    </MantineProvider>
   );
 };
 
