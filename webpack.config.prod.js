@@ -8,41 +8,27 @@ module.exports = {
   mode: process.env.NODE_ENV || "production",
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
-    fallback: { process: "process/browser" },
+    fallback: { process: "process/browser", buffer: false },
+    extensions: [".tsx", ".ts", ".js", ".json"],
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
   },
   devServer: { static: path.join(__dirname, "src") },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"],
+        use: ["ts-loader"],
       },
       {
-        test: /\.(css|scss)$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-          },
-          "sass-loader",
-        ],
+        test: /\.css$/,
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
-        test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-        use: ["file-loader"],
-      },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg|otf)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "[name].[ext]",
-              outputPath: "FontsOutput/",
-            },
-          },
-        ],
+        test: /\.(eot|ttf|woff|woff2|png|jpg|gif|svg|pdf)$/,
+        type: "asset",
       },
     ],
   },
