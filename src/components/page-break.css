@@ -1,0 +1,51 @@
+/* 
+.break-above::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-width: 30px;
+  height: 100%;
+  min-height: 30px;
+  background-color: alpha(var(--mantine-color-blue-8), 0.2);
+  border-top: 1px solid var(--mantine-color-gray-2);
+  border-bottom: 1px solid var(--mantine-color-gray-2);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  /* background-color: var(--mantine-color-white); */
+
+.break-debug {
+  /* page-break-after: always; */
+  position: relative;
+}
+
+.break-debug::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-width: 30px;
+  height: 100%;
+  min-height: 30px;
+}
+
+.break-debug.break-above::after {
+  background-color: alpha(var(--mantine-color-green-8), 0.2);
+}
+
+.break-debug.break-below::after {
+  background-color: alpha(var(--mantine-color-blue-8), 0.2);
+}
+
+/* .break-debug.break-intersecting::after {
+  background-color: alpha(var(--mantine-color-orange-8), 0.2);
+} */
+
+/* .break-debug.break-intersecting-first::after {
+  background-color: alpha(var(--mantine-color-violet-8), 0.2);
+}
+
+.break-debug.break-intersecting-last::after {
+  background-color: alpha(var(--mantine-color-pink-8), 0.2);
+} */

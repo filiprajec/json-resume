@@ -1,17 +1,17 @@
 import { Fragment } from "react";
 import styled from "styled-components";
-import { Box, Text, Stack, Group, UnstyledButton, Paper } from "@mantine/core";
+import { Box, Text, Stack, Group, UnstyledButton, Badge } from "@mantine/core";
 
-import { useResume } from "../../context";
-import { ColorScheme } from "../../resume/color-schemes";
+import {
+  useResume,
+  ColorScheme,
+  ColorSchemeKey,
+  colorSchemes,
+} from "@/context";
 
 export const SelectColorSchemePanel = () => {
-  const { resume } = useResume();
-
-  if (!resume) return null;
-
-  const colorSchemes = resume.getColorSchemes();
-  const selectedColorScheme = resume.getColorSchemeKey();
+  const { resumeConfig, updateResumeConfig } = useResume();
+  const selectedColorScheme = resumeConfig.colorSchemeKey;
 
   return (
     <Box>
@@ -19,7 +19,7 @@ export const SelectColorSchemePanel = () => {
         <Text size="sm" fw={500}>
           Color Scheme
         </Text>
-        <Paper withBorder p="sm">
+        <Box>
           <Group gap="xs">
             {Object.keys(colorSchemes).map((colorSchemeKey) => (
               <Fragment key={`theme-tablet-${colorSchemeKey}`}>
@@ -27,14 +27,17 @@ export const SelectColorSchemePanel = () => {
                   colorScheme={colorSchemes[colorSchemeKey]}
                   colorSchemeKey={colorSchemeKey}
                   changeColorScheme={() =>
-                    resume.updateColorScheme(colorSchemeKey)
+                    updateResumeConfig({
+                      colorSchemeKey: colorSchemeKey as ColorSchemeKey,
+                      colorScheme: colorSchemes[colorSchemeKey],
+                    })
                   }
                   selected={colorSchemeKey === selectedColorScheme}
                 />
               </Fragment>
             ))}
           </Group>
-        </Paper>
+        </Box>
       </Stack>
     </Box>
   );
@@ -53,21 +56,58 @@ const ColorSchemeTablet = ({
   changeColorScheme,
   selected,
 }: ColorSchemeTabletProps) => (
-  <Swatch onClick={() => changeColorScheme(colorSchemeKey)} selected={selected}>
-    <Box bg={colorScheme.panel} w={10} h={20} />
-    <Box bg={colorScheme.primary} w={10} h={20} />
-  </Swatch>
+  <ColorSchemeButton
+    onClick={() => changeColorScheme(colorSchemeKey)}
+    selected={selected}
+  >
+    <Stack gap={0}>
+      <Box
+        bg={colorScheme.inverted ? colorScheme.primary : colorScheme.secondary}
+        w={82}
+        p={6}
+      >
+        <Stack gap={4}>
+          <Text
+            fz={12}
+            fw={700}
+            ff="heading"
+            c={colorScheme.inverted ? "gray.0" : "dark.9"}
+          >
+            Title
+          </Text>
+          <Badge
+            color={
+              colorScheme.inverted ? colorScheme.secondary : colorScheme.primary
+            }
+            variant="light"
+            size="xs"
+          >
+            ABC
+          </Badge>
+        </Stack>
+      </Box>
+      <Box bg="white" w={82} p={6}>
+        <Stack gap={4}>
+          <Text fz={8} fw={500} ff="text">
+            Lorem Ipsum
+          </Text>
+        </Stack>
+      </Box>
+    </Stack>
+  </ColorSchemeButton>
 );
 
-const Swatch = styled(UnstyledButton<"button">)<{ selected: boolean }>`
+const ColorSchemeButton = styled(UnstyledButton<"button">)<{
+  selected: boolean;
+}>`
   display: inline-flex;
   gap: 0px;
-  border-radius: var(--mantine-radius-lg);
   overflow: hidden;
   border: ${(props) =>
     props.selected
-      ? "var(--mantine-color-gray-6) solid 1px"
+      ? "var(--mantine-color-gray-4) solid 1px"
       : "var(--mantine-color-gray-3) solid 1px"};
-  transform: ${(props) => (props.selected ? "scale(1.1)" : "scale(1)")};
-  transition: "transform 0.2s ease-in-out";
+  transition: "opacity 0.2s ease-in-out";
+  opacity: ${(props) => (props.selected ? "1" : "0.5")};
+  border-radius: var(--mantine-radius-md);
 `;

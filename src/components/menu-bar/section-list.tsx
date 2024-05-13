@@ -1,20 +1,14 @@
-import { Box, Text, Stack, Paper, Center, Divider } from "@mantine/core";
+import { Box, Text, Stack, Paper, Center } from "@mantine/core";
 import { Droppable } from "@hello-pangea/dnd";
 
-import { ListState } from "./types";
-import { SectionListItem } from "./section-list-item";
+import { type ListState, SectionListItem } from "./section-list-item";
 
 interface SectionListProps {
   state: (ListState | undefined)[];
   droppableId: string;
-  pageNumber: number;
 }
 
-export const SectionList = ({
-  state,
-  droppableId,
-  pageNumber,
-}: SectionListProps) => {
+export const SectionList = ({ state, droppableId }: SectionListProps) => {
   return (
     <Box pos="relative">
       <Stack gap="xs" pos="relative" style={{ zIndex: 1 }}>
@@ -25,7 +19,13 @@ export const SectionList = ({
                 {state?.map((item, index) => {
                   if (!item) return null;
 
-                  return <SectionListItem item={item} index={index} />;
+                  return (
+                    <SectionListItem
+                      item={item}
+                      index={index}
+                      key={item.sectionKey}
+                    />
+                  );
                 })}
               </Stack>
               {provided.placeholder}

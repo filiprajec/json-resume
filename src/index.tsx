@@ -7,9 +7,9 @@ const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container!);
 
 root.render(
-  <PageProvider>
-    <ResumeProvider>
+  <ResumeProvider>
+    <PageProvider>
       <App />
-    </ResumeProvider>
-  </PageProvider>
+    </PageProvider>
+  </ResumeProvider>
 );

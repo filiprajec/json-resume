@@ -1,4 +1,4 @@
-import { ResumeJsonSchema } from "../resume-schema-types";
+import { ResumeJsonSchema } from "@/resume-schema-types";
 import { ColorScheme, ColorSchemeKey, colorSchemes } from "./color-schemes";
 import { ResumeDataSectionKey } from "./types";
 
@@ -16,27 +16,26 @@ export type ResumePageLayout = {
 
 export type ResumeConfig = {
   json: Partial<ResumeJsonSchema>;
-  layout: ResumePageLayout[];
+  layout: ResumePageLayout;
   sectionConfig: Record<ResumeDataSectionKey, ResumeSectionConfig>;
   colorScheme: ColorScheme;
   colorSchemeKey: ColorSchemeKey;
+  pageCount: number;
 };
 
-export const layoutDefault: ResumePageLayout[] = [
-  {
-    panel: ["basics", "skills", "interests"],
-    body: [
-      "work",
-      "volunteer",
-      "education",
-      "awards",
-      "projects",
-      "publications",
-      "languages",
-      "references",
-    ],
-  },
-];
+export const layoutDefault: ResumePageLayout = {
+  panel: ["basics", "skills", "interests"],
+  body: [
+    "work",
+    "volunteer",
+    "education",
+    "awards",
+    "projects",
+    "publications",
+    "languages",
+    "references",
+  ],
+};
 
 export const colorSchemeDefault: ColorSchemeKey = "grayAndViolet";
 
@@ -116,4 +115,5 @@ export const configInitial: ResumeConfig = {
   layout: layoutDefault,
   colorScheme: colorSchemes[colorSchemeDefault],
   colorSchemeKey: colorSchemeDefault,
+  pageCount: 1,
 };

@@ -7,3 +7,4 @@ export * from "./list-stack";
 export * from "./menu-bar";
 export * from "./resume-paper";
 export * from "./header";
+export * from "./page-break";

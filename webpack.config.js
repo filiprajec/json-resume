@@ -9,8 +9,11 @@ module.exports = {
   mode: process.env.NODE_ENV || "development",
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
-    fallback: { process: "process/browser", buffer: false, fs: false },
+    fallback: { process: "process/browser", buffer: false },
     extensions: [".tsx", ".ts", ".js", ".json"],
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
   },
   devServer: { static: path.join(__dirname, "src") },
   module: {
@@ -22,16 +25,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            // options: {
-            //   modules: true,
-            // },
-          },
-          "postcss-loader",
-        ],
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.(eot|ttf|woff|woff2|png|jpg|gif|svg|pdf)$/,

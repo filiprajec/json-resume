@@ -13,28 +13,28 @@ export const paperTheme = (scale: number) =>
       fontFamily: "Karrik",
       sizes: {
         h1: {
-          fontSize: "2.5rem",
-          lineHeight: "2.75rem",
+          fontSize: "calc(2.5rem * var(--mantine-scale))",
+          lineHeight: "calc(2.75rem * var(--mantine-scale))",
         },
         h2: {
-          fontSize: "2rem",
-          lineHeight: "2.25rem",
+          fontSize: "calc(2rem * var(--mantine-scale))",
+          lineHeight: "calc(2.25rem * var(--mantine-scale))",
         },
         h3: {
-          fontSize: "1.5rem",
-          lineHeight: "1.75rem",
+          fontSize: "calc(1.5rem * var(--mantine-scale))",
+          lineHeight: "calc(1.75rem * var(--mantine-scale))",
         },
         h4: {
-          fontSize: "1.25rem",
-          lineHeight: "1.5rem",
+          fontSize: "calc(1.25rem * var(--mantine-scale))",
+          lineHeight: "calc(1.5rem * var(--mantine-scale))",
         },
         h5: {
-          fontSize: "1rem",
-          lineHeight: "1.25rem",
+          fontSize: "calc(1rem * var(--mantine-scale))",
+          lineHeight: "calc(1.25rem * var(--mantine-scale))",
         },
         h6: {
-          fontSize: "0.75rem",
-          lineHeight: "1rem",
+          fontSize: "calc(0.75rem * var(--mantine-scale))",
+          lineHeight: "calc(1rem * var(--mantine-scale))",
         },
       },
     },

@@ -1,22 +1,29 @@
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { Flex, rem, Text, ThemeIcon, Timeline, Title } from "@mantine/core";
 
+import {
+  useLayoutLocation,
+  useResume,
+  type ResumeDataSectionKey,
+} from "@/context";
 import { Description } from "./description";
-import { useResume } from "../context";
-import type { ResumeDataSectionKey } from "../resume";
-import styled from "styled-components";
-import React from "react";
 import { BasicsSection } from "./basics-section";
+import { PageBreak, TimelineItemBreak } from "./page-break";
+import { getResumeSectionIcon } from "@/context/resume-context/get-resume-section-icon";
 
 interface SectionProps {
   sectionKey: ResumeDataSectionKey;
+  withPageBreaks?: boolean;
 }
 
-export const Section = ({ sectionKey }: SectionProps) => {
-  const { resume } = useResume();
-  const config = resume?.getSectionConfig(sectionKey);
+export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
+  const { resumeConfig, sectionHasContent, getSectionProperties } = useResume();
+  const sectionConfig = resumeConfig.sectionConfig[sectionKey];
+  const { textColor, accentColor } = useLayoutLocation();
+  const properties = getSectionProperties(sectionKey);
+  const icon = getResumeSectionIcon(sectionKey);
 
-  if (!resume?.sectionHasContent(sectionKey) || !config?.visible) {
+  if (!sectionHasContent(sectionKey) || !sectionConfig?.visible) {
     return null;
   }
 
@@ -24,53 +31,75 @@ export const Section = ({ sectionKey }: SectionProps) => {
     return <BasicsSection />;
   }
 
-  const properties = resume?.getSectionProperties(sectionKey);
-  const id = resume?.renderId;
-  const icon = resume?.getIcon(sectionKey);
-
   return (
     <Flex direction="column" gap="sm">
-      <Flex direction="row" gap="sm" justify="start" align="center" h="100%">
-        {config?.showIcon && icon && (
-          <ThemeIcon
-            variant="light"
-            radius="lg"
-            size="lg"
-            color={resume?.getColorScheme().primary}
+      <PageBreak
+        render={() => (
+          <Flex
+            direction="row"
+            gap="sm"
+            justify="start"
+            align="center"
+            h="100%"
           >
-            {React.createElement(icon, {
-              stroke: 1.5,
-              style: {
-                width: rem(24),
-                height: rem(24),
-              },
-            })}
-          </ThemeIcon>
+            {sectionConfig?.showIcon && icon && (
+              <ThemeIcon
+                variant="light"
+                radius="lg"
+                size="lg"
+                color={accentColor}
+              >
+                {React.createElement(icon, {
+                  stroke: 1.5,
+                  style: {
+                    width: rem(24),
+                    height: rem(24),
+                  },
+                })}
+              </ThemeIcon>
+            )}
+            <Title order={3} c={textColor}>
+              {sectionConfig?.heading}
+            </Title>
+          </Flex>
         )}
-        <Title order={4}>{config?.heading}</Title>
-      </Flex>
-      {config?.withTimeline === true ? (
+      />
+      {sectionConfig?.withTimeline === true ? (
         <Timeline bulletSize="1rem">
-          {properties?.map((property, index) => (
-            <TimeLineItem
-              key={`timeline-cell-${index}`}
+          {properties?.map((property) => (
+            <TimelineItemBreak
+              key={`timeline-cell-${property.id}`}
               title={
-                <Text fw={700} size="lg" lh={1}>
+                <Text fw={700} size="lg" lh={1} c={textColor}>
                   {property.heading}
                 </Text>
               }
-            >
-              <Flex direction="column">
-                <Description property={property} withHeading={false} />
-              </Flex>
-            </TimeLineItem>
+              active={withPageBreaks}
+              render={() => (
+                <Flex direction="column">
+                  <Description
+                    property={property}
+                    withHeading={false}
+                    withPageBreaks={withPageBreaks}
+                  />
+                </Flex>
+              )}
+            />
           ))}
         </Timeline>
       ) : (
         <Flex direction="column" gap="xs">
-          {properties?.map((property, index) => (
-            <Fragment key={`description-section-${id}`}>
-              <Description property={property} />
+          {properties?.map((property) => (
+            <Fragment key={`description-section-${property.id}`}>
+              <PageBreak
+                active={withPageBreaks}
+                render={() => (
+                  <Description
+                    property={property}
+                    withPageBreaks={withPageBreaks}
+                  />
+                )}
+              />
             </Fragment>
           ))}
         </Flex>
@@ -78,7 +107,3 @@ export const Section = ({ sectionKey }: SectionProps) => {
     </Flex>
   );
 };
-
-const TimeLineItem = styled(Timeline.Item)`
-  --mantine-spacing-xl: calc(0.75rem * var(--mantine-scale));
-`;

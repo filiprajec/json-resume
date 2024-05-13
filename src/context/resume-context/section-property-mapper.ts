@@ -1,7 +1,9 @@
-import { getStartEndDate, parseDate } from "./utils";
-import { ResumeClass, ResumeDataSectionKey, ResumeDataWork } from "./types";
+import { getStartEndDateStart, getDateString } from "@/utils";
+import { ResumeDataSectionKey, ResumeDataWork, ResumeData } from "./types";
+import { typeSwitchGetter } from "./type-switch-getter";
 
 export type SectionProperty = {
+  id: string;
   heading: string | undefined;
   rating: string | undefined;
   date: string | undefined;
@@ -20,9 +22,10 @@ const workMapper = (items: ResumeDataWork[]): SectionProperty[] => {
       .join(" ");
 
     return {
+      id: item.id,
       heading,
       rating: item.location,
-      date: getStartEndDate(item),
+      date: getStartEndDateStart(item),
       description: item.summary,
       list: item.highlights,
       tags: undefined,
@@ -30,14 +33,15 @@ const workMapper = (items: ResumeDataWork[]): SectionProperty[] => {
   });
 };
 
-export function sectionMapper(
-  this: ResumeClass,
+export function sectionPropertyMapper(
+  data: ResumeData,
   sectionKey: ResumeDataSectionKey
 ): SectionProperty[] {
-  return this.typeSwitchGetter<SectionProperty[]>(sectionKey, {
+  return typeSwitchGetter<SectionProperty[]>(data, sectionKey, {
     basics: (items) => {
-      return items.map(() => {
+      return items.map((item) => {
         return {
+          id: item.id,
           heading: undefined,
           rating: undefined,
           date: undefined,
@@ -51,9 +55,10 @@ export function sectionMapper(
     volunteer: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: [item.organization, item.position].join(" - "),
           rating: item.position,
-          date: getStartEndDate(item),
+          date: getStartEndDateStart(item),
           description: item.summary,
           list: item.highlights,
           tags: undefined,
@@ -73,9 +78,10 @@ export function sectionMapper(
           .join(" • ");
 
         return {
+          id: item.id,
           heading,
           rating: item.score,
-          date: getStartEndDate(item),
+          date: getStartEndDateStart(item),
           description: "",
           list: item.courses,
           tags: undefined,
@@ -85,9 +91,10 @@ export function sectionMapper(
     awards: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: [item.title, item.awarder].join(" • "),
           rating: "",
-          date: parseDate(item.date),
+          date: getDateString(item.date),
           description: item.summary,
           list: undefined,
           tags: undefined,
@@ -97,9 +104,10 @@ export function sectionMapper(
     publications: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: [item.name, item.publisher].join(" • "),
           rating: "",
-          date: parseDate(item.releaseDate),
+          date: getDateString(item.releaseDate),
           description: item.summary,
           list: undefined,
           tags: undefined,
@@ -109,6 +117,7 @@ export function sectionMapper(
     skills: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: item.name,
           rating: item.level,
           date: undefined,
@@ -121,6 +130,7 @@ export function sectionMapper(
     languages: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: item.language,
           rating: item.fluency,
           date: undefined,
@@ -133,6 +143,7 @@ export function sectionMapper(
     interests: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: item.name,
           rating: undefined,
           date: undefined,
@@ -145,6 +156,7 @@ export function sectionMapper(
     references: (items) => {
       return items.map((item) => {
         return {
+          id: item.id,
           heading: item.name,
           rating: undefined,
           date: undefined,
@@ -162,9 +174,10 @@ export function sectionMapper(
           .join(" • ");
 
         return {
+          id: item.id,
           heading,
           rating: item.level,
-          date: getStartEndDate(item),
+          date: getStartEndDateStart(item),
           description: item.description,
           list: item.highlights,
           tags: item.keywords,

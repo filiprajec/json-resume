@@ -1,9 +1,10 @@
-import resumeSchema from "resume-schema";
 import { Button, Stack, Group, Modal, JsonInput, Flex } from "@mantine/core";
 import { useShallowEffect } from "@mantine/hooks";
 import { useField } from "@mantine/form";
+import resumeSchema from "resume-schema";
 
-import { useResume } from "../../context";
+import { logger } from "@/lib/logger";
+import { useResume } from "@/context";
 
 interface EditJsonModalProps {
   opened: boolean;
@@ -11,7 +12,7 @@ interface EditJsonModalProps {
 }
 
 export const EditJsonModal = ({ opened, onClose }: EditJsonModalProps) => {
-  const { resume } = useResume();
+  const { updateJson, resumeConfig } = useResume();
 
   const jsonField = useField({
     initialValue: "",
@@ -45,18 +46,18 @@ export const EditJsonModal = ({ opened, onClose }: EditJsonModalProps) => {
   });
 
   useShallowEffect(() => {
-    jsonField.setValue(JSON.stringify(resume?.getJson(), null, 2));
-  }, [resume, opened]);
+    jsonField.setValue(JSON.stringify(resumeConfig.json, null, 2));
+  }, [opened, resumeConfig.json]);
 
   const onSaveJson = () => {
     try {
       jsonField.validate();
       const json = jsonField.getValue();
       const parsed = JSON.parse(json);
-      resume?.updateJson(parsed);
+      updateJson(parsed);
       onClose();
     } catch (e) {
-      console.log(e);
+      logger.error(e);
     }
   };
 

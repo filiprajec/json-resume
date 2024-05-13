@@ -1,10 +1,12 @@
 import { ActionIcon, Flex, Group, Text } from "@mantine/core";
-import { IconPrinter } from "@tabler/icons-react";
-import { usePage } from "../context";
+import { IconDeviceFloppy, IconPrinter } from "@tabler/icons-react";
+
+import { usePage, useResume } from "@/context";
 import { SettingsMenu } from "./settings-menu";
 
 export const Header = () => {
   const { pageState } = usePage();
+  const { save } = useResume();
 
   return (
     <Flex justify="space-between" px="md" align="center" h="100%">
@@ -13,6 +15,14 @@ export const Header = () => {
         <Text fw={700}>JSON Resume x Mantine</Text>
       </Flex>
       <Group gap="xs">
+        <ActionIcon
+          onClick={() => save()}
+          size="md"
+          variant="white"
+          disabled={pageState !== "ready"}
+        >
+          <IconDeviceFloppy stroke={1.5} />
+        </ActionIcon>
         <ActionIcon
           onClick={() => window.print()}
           size="md"

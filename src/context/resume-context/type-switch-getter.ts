@@ -1,13 +1,17 @@
-import { ResumeClass, ResumeDataSectionKey, ResumeData } from "./types";
+import { ResumeDataSectionKey, ResumeData } from "./types";
 
 export function typeSwitchGetter<T>(
-  this: ResumeClass,
+  data: ResumeData,
   sectionKey: ResumeDataSectionKey,
   switches: {
     [K in keyof ResumeData]: (data: NonNullable<ResumeData[K]>) => T;
   }
 ): T {
-  const sectionData: ResumeData[keyof ResumeData] = this.getSection(sectionKey);
+  const sectionData: ResumeData[keyof ResumeData] = data[sectionKey];
+  if (sectionData === undefined) {
+    return [] as T;
+  }
+
   // @ts-ignore
   const res = switches[sectionKey]?.(sectionData);
 

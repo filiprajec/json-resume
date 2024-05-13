@@ -1,6 +1,7 @@
 export type ColorScheme = {
-  panel: string;
+  secondary: string;
   primary: string;
+  inverted: boolean;
 };
 
 export type ColorSchemeKey =
@@ -17,35 +18,43 @@ export type ColorSchemes = Record<ColorSchemeKey, ColorScheme>;
 
 export const colorSchemes: ColorSchemes = {
   gray: {
-    panel: "var(--mantine-color-gray-1)",
+    secondary: "var(--mantine-color-gray-1)",
     primary: "var(--mantine-color-dark-8)",
+    inverted: false,
   },
   grayAndViolet: {
-    panel: "var(--mantine-color-gray-1)",
+    secondary: "var(--mantine-color-gray-1)",
     primary: "var(--mantine-color-violet-5)",
+    inverted: false,
   },
   grayAndYellow: {
-    panel: "var(--mantine-color-gray-1)",
+    secondary: "var(--mantine-color-gray-1)",
     primary: "var(--mantine-color-yellow-9)",
+    inverted: false,
   },
   candy: {
-    panel: "var(--mantine-color-lime-1)",
-    primary: "var(--mantine-color-violet-4)",
+    secondary: "var(--mantine-color-lime-2)",
+    primary: "var(--mantine-color-indigo-8)",
+    inverted: false,
   },
   softCandy: {
-    panel: "var(--mantine-color-blue-1)",
+    secondary: "var(--mantine-color-blue-1)",
     primary: "var(--mantine-color-pink-7)",
+    inverted: false,
   },
   fire: {
-    panel: "var(--mantine-color-red-1)",
+    secondary: "var(--mantine-color-red-1)",
     primary: "var(--mantine-color-orange-8)",
+    inverted: false,
   },
   ice: {
-    panel: "var(--mantine-color-indigo-6)",
-    primary: "var(--mantine-color-gray-0)",
+    primary: "var(--mantine-color-indigo-6)",
+    secondary: "var(--mantine-color-gray-0)",
+    inverted: true,
   },
   pink: {
-    panel: "var(--mantine-color-pink-2)",
+    secondary: "var(--mantine-color-pink-2)",
     primary: "var(--mantine-color-pink-7)",
+    inverted: false,
   },
 };

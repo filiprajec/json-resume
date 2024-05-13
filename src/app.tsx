@@ -5,32 +5,26 @@ import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "@mantine/core/styles.css";
 
-import { useRef, useMemo } from "react";
 import {
   AppShell,
   Box,
   Flex,
+  LoadingOverlay,
   MantineProvider,
   ScrollArea,
   ScrollAreaAutosize,
 } from "@mantine/core";
 
-import { useResume, ZoomProvider } from "./context";
-import {
-  ResumePaper,
-  MenuBar,
-  GlobalPrintStyleDom,
-  Header,
-} from "./components";
+import { PaperThemeProvider, usePage } from "./context";
+import { ResumePaper, MenuBar, GlobalPrintStyle, Header } from "./components";
 import { theme } from "./theme";
 
 export const App = () => {
-  const { resume, resumeId } = useResume();
-  const layout = resume?.getLayout();
+  const { pageState } = usePage();
 
   return (
     <MantineProvider theme={theme}>
-      <GlobalPrintStyleDom />
+      <GlobalPrintStyle />
       <AppShell header={{ height: 48 }}>
         <AppShell.Header id="header-root" h={48}>
           <Header />
@@ -49,15 +43,16 @@ export const App = () => {
               </Box>
             </ScrollAreaAutosize>
             <ScrollArea w="100%">
-              <Box key={resumeId}>
-                <ZoomProvider>
-                  {layout?.map((_, index) => (
-                    <ResumePaper
-                      pageIndex={index}
-                      attachZoomRef={index === 0}
-                    />
-                  ))}
-                </ZoomProvider>
+              <Box>
+                <LoadingOverlay
+                  visible={pageState !== "ready"}
+                  zIndex={2}
+                  overlayProps={{ blur: 15 }}
+                  loaderProps={{ type: "dots" }}
+                />
+                <PaperThemeProvider>
+                  <ResumePaper />
+                </PaperThemeProvider>
               </Box>
             </ScrollArea>
           </Flex>

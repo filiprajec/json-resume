@@ -1,8 +1,10 @@
-import { Box, Stack, Skeleton } from "@mantine/core";
+import { Box, Stack } from "@mantine/core";
 
 import { SelectColorSchemePanel } from "./select-color-scheme-panel";
-import { ResumeJsonFieldPanel } from "./resume-json-field-panel";
+import { ResumeJsonPanel } from "./resume-json-panel";
 import { SectionPanel } from "./section-panel";
+import { SelectPagesSection } from "./select-pages-section";
+import { AccuracySelectPanel } from "./accuracy-select-panel";
 
 export const MenuBar = () => {
   return (
@@ -10,7 +12,13 @@ export const MenuBar = () => {
       <form style={{ height: "100%" }}>
         <Stack gap="xl">
           <Box pt="sm" pb="lg" px="lg" bg="gray.0">
-            <ResumeJsonFieldPanel />
+            <ResumeJsonPanel />
+          </Box>
+          <Box px="lg">
+            <AccuracySelectPanel />
+          </Box>
+          <Box px="lg">
+            <SelectPagesSection />
           </Box>
           <Box px="lg">
             <SelectColorSchemePanel />

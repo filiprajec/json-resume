@@ -1,12 +1,14 @@
 import { Badge, Group } from "@mantine/core";
-import { useResume } from "../context";
+
+import { useLayoutLocation } from "@/context";
 
 interface BadgeGroupProps {
   tags?: string[];
+  withPageBreaks?: boolean;
 }
 
 export const BadgeGroup = ({ tags }: BadgeGroupProps) => {
-  const { resume } = useResume();
+  const { accentColor } = useLayoutLocation();
   if (!tags) return null;
 
   return (
@@ -16,7 +18,7 @@ export const BadgeGroup = ({ tags }: BadgeGroupProps) => {
           size="lg"
           variant="light"
           key={`bubble-${tag.substring(0, 5)}-${tag.substring(tag.length - 5)}`}
-          color={resume?.getColorScheme().primary}
+          color={accentColor}
         >
           {tag}
         </Badge>

@@ -1,61 +1,71 @@
 import React from "react";
-import { Box, Flex, Loader, MantineProvider, Stack, Text } from "@mantine/core";
+import { Box, Flex, Loader, MantineProvider, Text } from "@mantine/core";
 import styled from "styled-components";
 import { IconExclamationCircle } from "@tabler/icons-react";
 
-import { useZoom, useResume, usePage } from "../context";
+import {
+  useResume,
+  usePage,
+  type ResumeDataSectionKey,
+  LayoutLocationProvider,
+} from "@/context";
 import { Section } from "./section";
-import type { ResumeDataSectionKey } from "../resume";
 
-interface ResumePaperProps {
-  attachZoomRef?: boolean;
-  errorMessage?: string;
-  pageIndex: number;
-}
-
-export const ResumePaper = ({
-  errorMessage,
-  pageIndex,
-  attachZoomRef = false,
-}: ResumePaperProps) => {
-  const { attachOuterRef, attachInnerRef } = useZoom();
-  const { pageState } = usePage();
-  const { resume } = useResume();
-  const pageLayout = resume?.getPageLayout(pageIndex);
-  const hasPanel = pageLayout?.panel && pageLayout?.panel.length > 0;
-
-  if (errorMessage !== undefined) {
-    return <ErrorPage />;
-  }
-
-  if (resume?.isEmpty()) {
-    return <EmptyPage />;
-  }
+export const ResumePaper = () => {
+  const { attachContentRef, attachResumeRef, marginX, marginY, pageState } =
+    usePage();
+  const { resumeConfig, isResumeEmpty } = useResume();
+  const { pageCount, layout } = resumeConfig;
+  const hasPanel = layout.panel && layout.panel.length > 0;
 
   return (
-    <Paper>
-      {pageState !== "ready" && <LoadingPage />}
-      <PaperInner margin="20px" ref={attachZoomRef ? attachOuterRef : null}>
-        <Flex ref={attachZoomRef ? attachInnerRef : null}>
+    <Paper pages={pageCount}>
+      {pageState === "error" && <ErrorPage />}
+      {isResumeEmpty() && <EmptyPage />}
+      <PaperInner ref={attachResumeRef}>
+        <Flex
+          ref={attachContentRef}
+          direction="row"
+          style={{
+            marginLeft: marginX,
+            marginRight: marginX,
+            marginTop: marginY,
+            marginBottom: marginY,
+          }}
+        >
           {hasPanel && (
-            <Flex
-              flex={1}
-              bg={resume?.getColorScheme().panel}
-              direction="column"
-              gap="md"
-              py="sm"
-              px="md"
-            >
-              {pageLayout.panel.map((sectionKey: ResumeDataSectionKey) => (
-                <Section sectionKey={sectionKey} />
+            <LayoutLocationProvider layoutLocation="panel">
+              <Flex
+                bg={
+                  resumeConfig.colorScheme.inverted
+                    ? resumeConfig.colorScheme.primary
+                    : resumeConfig.colorScheme.secondary
+                }
+                direction="column"
+                gap="md"
+                py="sm"
+                px="md"
+                flex={1}
+                maw="35%"
+                // mah={`calc(${pageCount} * 29.7cm - ${marginY * 2}px)`}
+              >
+                {layout.panel.map((sectionKey: ResumeDataSectionKey) => (
+                  <Section sectionKey={sectionKey} key={sectionKey} />
+                ))}
+              </Flex>
+            </LayoutLocationProvider>
+          )}
+          <LayoutLocationProvider layoutLocation="body">
+            <Flex direction="column" gap="lg" px="md" flex={2}>
+              {layout?.body.map((sectionKey: ResumeDataSectionKey) => (
+                <Section
+                  key={sectionKey}
+                  sectionKey={sectionKey}
+                  withPageBreaks
+                />
               ))}
             </Flex>
-          )}
-          <Flex flex={3} direction="column" gap="xl" px="md">
-            {pageLayout?.body.map((sectionKey: ResumeDataSectionKey) => (
-              <Section sectionKey={sectionKey} />
-            ))}
-          </Flex>
+          </LayoutLocationProvider>
         </Flex>
       </PaperInner>
     </Paper>
@@ -114,13 +124,14 @@ const ErrorPage = () => {
 
 const Paper = styled.div<{
   top?: React.CSSProperties["top"];
+  pages?: number;
 }>`
   display: block;
   position: relative;
   top: ${(props) => props.top ?? 0};
   width: 21cm;
-  height: 29.5cm;
-  margin: 0.25cm auto calc(0.25cm + ${(props) => props.top ?? "0cm"}) auto;
+  height: ${(props) => (props.pages ?? 1) * 29.7}cm;
+  margin: 0.75cm auto 0.75cm auto;
   box-shadow: var(--mantine-shadow-xl);
   border: 1px solid var(--mantine-color-gray-2);
   background: var(--mantine-color-white);
@@ -134,7 +145,7 @@ const Paper = styled.div<{
 
   @media print {
     width: 21cm;
-    height: 29.5cm;
+    height: ${(props) => (props.pages ?? 1) * 29.7}cm;
     margin: 0;
     background: var(--mantine-color-white);
     box-sizing: content-box;
@@ -143,14 +154,10 @@ const Paper = styled.div<{
   }
 `;
 
-const PaperInner = styled.div<{
-  margin: React.CSSProperties["margin"];
-}>`
+const PaperInner = styled.div`
   position: absolute;
-  top: 0.1cm;
-  margin: ${(props) => props.margin};
-  width: calc(100% - 2 * ${(props) => props.margin});
-  height: calc(100% - 2 * ${(props) => props.margin});
+  width: 100%;
+  height: 100%;
   box-sizing: content-box;
 `;
 

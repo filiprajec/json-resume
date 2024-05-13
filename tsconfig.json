@@ -1,27 +1,29 @@
 {
-  "include": ["src/**/*", "src/**/*.json", "globals.d.ts"],
+  "include": ["src/**/*", "src/**/*.json", "globals.d.ts", "server"],
   "exclude": ["node_modules", "webpack.config.js", "webpack.config.prod.js"],
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "composite": true,
-    "declarationDir": "./types",
-    "tsBuildInfoFile": "./.tsconfig.tsbuildinfo",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "declaration": true,
+    "declarationDir": "./types",
     "esModuleInterop": true,
     "inlineSources": true,
     "jsx": "react-jsx",
     "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "removeComments": false,
+    "outDir": "./dist",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "resolveJsonModule": true,
+    "rootDir": "./src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2022",
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "tsBuildInfoFile": "./.tsconfig.tsbuildinfo",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

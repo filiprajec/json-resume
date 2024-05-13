@@ -1,13 +1,14 @@
 import { ActionIcon, Menu, rem } from "@mantine/core";
 import { IconSettings, IconTrash } from "@tabler/icons-react";
-import { usePage, useResume } from "../context";
+
+import { usePage, useResume } from "@/context";
 
 export const SettingsMenu = () => {
   const { pageState } = usePage();
-  const { resume } = useResume();
+  const { resetConfig } = useResume();
 
   const onDelete = () => {
-    resume?.resetConfig();
+    resetConfig();
   };
 
   return (
