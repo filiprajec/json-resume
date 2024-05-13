@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", "src/**/*.json", "globals.d.ts", "server"],
+  "include": ["src/**/*", "src/**/*.json", "globals.d.ts"],
   "exclude": ["node_modules", "webpack.config.js", "webpack.config.prod.js"],
   "compilerOptions": {
     "allowJs": true,
