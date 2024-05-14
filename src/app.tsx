@@ -17,7 +17,7 @@ import {
 
 import { PaperThemeProvider, usePage } from "./context";
 import { ResumePaper, MenuBar, GlobalPrintStyle, Header } from "./components";
-import { theme } from "./theme";
+import { theme } from "./lib/theme";
 
 export const App = () => {
   const { pageState } = usePage();

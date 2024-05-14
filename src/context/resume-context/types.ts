@@ -12,52 +12,55 @@ import {
   ResumeSchemaPublications,
   ResumeSchemaReferences,
   ResumeSchemaLanguages,
-} from "@/resume-schema-types";
+} from "@/lib/resume-schema-types";
 
 export type TablerIcon = React.ForwardRefExoticComponent<
   Omit<IconProps, "ref"> & React.RefAttributes<Icon>
 >;
 
-export type ResumeDataBasics = ResumeSchemaBasics & {
+export type ResumeDataBasics = Partial<ResumeSchemaBasics> & {
   id: string;
   key: "basics";
 };
 
-export type ResumeDataWork = ResumeSchemaWork & { id: string; key: "work" };
-export type ResumeDataVolunteer = ResumeSchemaVolunteer & {
+export type ResumeDataWork = Partial<ResumeSchemaWork> & {
+  id: string;
+  key: "work";
+};
+export type ResumeDataVolunteer = Partial<ResumeSchemaVolunteer> & {
   id: string;
   key: "volunteer";
 };
-export type ResumeDataEducation = ResumeSchemaEducation & {
+export type ResumeDataEducation = Partial<ResumeSchemaEducation> & {
   id: string;
   key: "education";
 };
-export type ResumeDataSkills = ResumeSchemaSkills & {
+export type ResumeDataSkills = Partial<ResumeSchemaSkills> & {
   id: string;
   key: "skills";
 };
-export type ResumeDataInterests = ResumeSchemaInterests & {
+export type ResumeDataInterests = Partial<ResumeSchemaInterests> & {
   id: string;
   key: "interests";
 };
-export type ResumeDataProjects = ResumeSchemaProjects & {
+export type ResumeDataProjects = Partial<ResumeSchemaProjects> & {
   id: string;
   key: "projects";
 };
-export type ResumeDataAwards = ResumeSchemaAwards & {
+export type ResumeDataAwards = Partial<ResumeSchemaAwards> & {
   id: string;
   key: "awards";
 };
-export type ResumeDataPublications = ResumeSchemaPublications & {
+export type ResumeDataPublications = Partial<ResumeSchemaPublications> & {
   id: string;
   key: "publications";
 };
-export type ResumeDataReferences = ResumeSchemaReferences & {
+export type ResumeDataReferences = Partial<ResumeSchemaReferences> & {
   id: string;
   key: "references";
 };
 
-export type ResumeDataLanguages = ResumeSchemaLanguages & {
+export type ResumeDataLanguages = Partial<ResumeSchemaLanguages> & {
   id: string;
   key: "languages";
 };

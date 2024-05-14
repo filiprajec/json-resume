@@ -1,7 +1,7 @@
 import { List } from "@mantine/core";
 
-import { useLayoutLocation } from "@/context";
-import { PageBreak } from "./page-break";
+import { useLayout } from "@/context";
+import { Breakable } from "./breakable";
 
 interface ListStackProps {
   stack?: string[];
@@ -9,14 +9,14 @@ interface ListStackProps {
 }
 
 export const ListStack = ({ stack, withPageBreaks }: ListStackProps) => {
-  const { textColor } = useLayoutLocation();
+  const { colors } = useLayout();
 
   if (!stack || stack.length === 0) return null;
 
   return (
     <List>
       {stack.map((eachPoint) => (
-        <PageBreak
+        <Breakable
           display="inline"
           key={[
             "list-member",
@@ -25,7 +25,11 @@ export const ListStack = ({ stack, withPageBreaks }: ListStackProps) => {
           ].join("-")}
           active={withPageBreaks}
           render={() => (
-            <List.Item c={textColor} style={{ overflowWrap: "anywhere" }}>
+            <List.Item
+              c={colors.text}
+              style={{ overflowWrap: "anywhere" }}
+              mr={24}
+            >
               {eachPoint}
             </List.Item>
           )}

@@ -57,7 +57,7 @@ export class ResumePage implements ResumePageInterface {
   public addMarkers(pageRef: React.RefObject<HTMLDivElement>) {
     this.removeMarkers();
     const properties = this.calculatePageProperties(pageRef);
-    const showBufferZones = false;
+    const showBufferZones = true;
 
     properties.breakYs.forEach((y, index) => {
       const pageBreak = document.createElement("div");
@@ -66,6 +66,7 @@ export class ResumePage implements ResumePageInterface {
       pageBreak.style.height = "1px";
       pageBreak.style.backgroundColor = "var(--mantine-color-red-5)";
       pageBreak.style.top = `${y}px`;
+      pageBreak.style.zIndex = "1";
       pageBreak.classList.add("non-printable");
       pageRef.current?.appendChild(pageBreak);
       const pageNumber = document.createElement("div");
@@ -75,6 +76,7 @@ export class ResumePage implements ResumePageInterface {
       pageNumber.style.backgroundColor = "var(--mantine-color-red-5)";
       pageNumber.style.color = "white";
       pageNumber.style.fontSize = "12px";
+      pageNumber.style.zIndex = "1";
       pageNumber.style.padding = "2px 6px";
       pageNumber.textContent = `Page ${index + 1}`;
       pageNumber.classList.add("non-printable");
@@ -88,7 +90,7 @@ export class ResumePage implements ResumePageInterface {
         bufferZone.style.position = "absolute";
         bufferZone.style.width = "100%";
         bufferZone.style.height = `${this.marginY}px`;
-        bufferZone.style.backgroundColor = "var(--mantine-color-gray-0)";
+        bufferZone.style.backgroundColor = "var(--mantine-color-white)";
         bufferZone.style.opacity = "1";
         bufferZone.style.top = `${y - this.marginY}px`;
         pageRef.current?.appendChild(bufferZone);
@@ -96,9 +98,9 @@ export class ResumePage implements ResumePageInterface {
         bufferZone2.style.position = "absolute";
         bufferZone2.style.width = "100%";
         bufferZone2.style.height = `${this.marginY}px`;
-        bufferZone2.style.backgroundColor = "var(--mantine-color-gray-0)";
+        bufferZone2.style.backgroundColor = "var(--mantine-color-white)";
         bufferZone2.style.opacity = "1";
-        bufferZone2.style.top = `${y + this.marginY}px`;
+        bufferZone2.style.top = `${y}px`;
         pageRef.current?.appendChild(bufferZone2);
 
         this.pageMarkers.push(...[bufferZone, bufferZone2]);

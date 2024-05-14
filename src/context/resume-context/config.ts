@@ -1,4 +1,4 @@
-import { ResumeJsonSchema } from "@/resume-schema-types";
+import { ResumeJsonSchema } from "@/lib/resume-schema-types";
 import { ColorScheme, ColorSchemeKey, colorSchemes } from "./color-schemes";
 import { ResumeDataSectionKey } from "./types";
 
@@ -37,7 +37,7 @@ export const layoutDefault: ResumePageLayout = {
   ],
 };
 
-export const colorSchemeDefault: ColorSchemeKey = "grayAndViolet";
+export const colorSchemeDefault: ColorSchemeKey = "violet";
 
 export const configInitial: ResumeConfig = {
   json: {
@@ -48,7 +48,7 @@ export const configInitial: ResumeConfig = {
     basics: {
       heading: undefined,
       visible: true,
-      showIcon: false,
+      showIcon: true,
       withTimeline: false,
     },
     work: {

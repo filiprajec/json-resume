@@ -1,4 +1,4 @@
-import { getStartEndDateStart, getDateString } from "@/utils";
+import { getStartEndDateStart, getDateString } from "@/lib/utils";
 import { ResumeDataSectionKey, ResumeDataWork, ResumeData } from "./types";
 import { typeSwitchGetter } from "./type-switch-getter";
 
@@ -25,7 +25,10 @@ const workMapper = (items: ResumeDataWork[]): SectionProperty[] => {
       id: item.id,
       heading,
       rating: item.location,
-      date: getStartEndDateStart(item),
+      date: getStartEndDateStart({
+        startDate: item.startDate,
+        endDate: item.endDate,
+      }),
       description: item.summary,
       list: item.highlights,
       tags: undefined,
@@ -58,7 +61,10 @@ export function sectionPropertyMapper(
           id: item.id,
           heading: [item.organization, item.position].join(" - "),
           rating: item.position,
-          date: getStartEndDateStart(item),
+          date: getStartEndDateStart({
+            startDate: item.startDate,
+            endDate: item.endDate,
+          }),
           description: item.summary,
           list: item.highlights,
           tags: undefined,
@@ -81,7 +87,10 @@ export function sectionPropertyMapper(
           id: item.id,
           heading,
           rating: item.score,
-          date: getStartEndDateStart(item),
+          date: getStartEndDateStart({
+            startDate: item.startDate,
+            endDate: item.endDate,
+          }),
           description: "",
           list: item.courses,
           tags: undefined,
@@ -168,7 +177,7 @@ export function sectionPropertyMapper(
     },
     projects: (items) => {
       return items.map((item) => {
-        const nameAndRoles = [item.name, item.roles.join(", ")].join(", ");
+        const nameAndRoles = [item.name, item.roles?.join(", ")].join(", ");
         const heading = [nameAndRoles, item.entity, item.type]
           .filter(Boolean)
           .join(" • ");
@@ -177,7 +186,10 @@ export function sectionPropertyMapper(
           id: item.id,
           heading,
           rating: item.level,
-          date: getStartEndDateStart(item),
+          date: getStartEndDateStart({
+            startDate: item.startDate,
+            endDate: item.endDate,
+          }),
           description: item.description,
           list: item.highlights,
           tags: item.keywords,

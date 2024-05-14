@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useLocalStorage, useShallowEffect } from "@mantine/hooks";
 import { v4 as uuidv4 } from "uuid";
 
-import { ResumeJsonSchema } from "@/resume-schema-types";
+import { ResumeJsonSchema } from "@/lib/resume-schema-types";
 import { jsonSectionKeys, sectionKeys } from "./keys";
 import { sectionPropertyMapper } from "./section-property-mapper";
 import { ResumeData, ResumeDataSectionKey } from "./types";
@@ -193,9 +193,6 @@ export const ResumeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [setResumeConfig]);
 
   useShallowEffect(() => {
-    // if (resumeConfig) {
-    //   resume.current.setConfig(resumeConfig);
-    // }
     onConfigChangeEvents.forEach((event) => event(resumeConfig));
   }, [resumeConfig]);
 

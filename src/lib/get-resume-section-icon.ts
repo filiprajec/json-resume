@@ -1,6 +1,4 @@
 import {
-  IconBuildingEstate,
-  IconHeart,
   IconSchool,
   IconStar,
   IconBook,
@@ -9,17 +7,22 @@ import {
   IconMoodSmile,
   IconBadge,
   IconBolt,
+  IconBriefcase,
+  IconHeartHandshake,
 } from "@tabler/icons-react";
 
-import { ResumeDataSectionKey, TablerIcon } from "./types";
+import {
+  ResumeDataSectionKey,
+  TablerIcon,
+} from "../context/resume-context/types";
 
 export function getResumeSectionIcon(
   sectionKey: ResumeDataSectionKey
 ): TablerIcon | undefined {
   return {
     basics: undefined,
-    work: IconBuildingEstate,
-    volunteer: IconHeart,
+    work: IconBriefcase,
+    volunteer: IconHeartHandshake,
     education: IconSchool,
     awards: IconStar,
     publications: IconBook,

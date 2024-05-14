@@ -1,9 +1,9 @@
 import { Box, Flex, Text } from "@mantine/core";
 
-import { useLayoutLocation, SectionProperty } from "@/context";
+import { useLayout, SectionProperty } from "@/context";
 import { BadgeGroup } from "./badge-group";
 import { ListStack } from "./list-stack";
-import { PageBreak } from "./page-break";
+import { Breakable } from "./breakable";
 
 interface DescriptionProps {
   property: SectionProperty;
@@ -17,23 +17,23 @@ export const Description = ({
   withPageBreaks,
 }: DescriptionProps) => {
   const { heading, rating, description, date, list, tags } = property;
-  const { textColor } = useLayoutLocation();
+  const { colors } = useLayout();
 
   const hasMainContent = heading || rating || description || date || list;
 
   return (
-    <Flex direction="column" gap="xs">
+    <Flex direction="column" gap="sm">
       {hasMainContent && (
         <Flex direction="column" gap={4}>
           {withHeading && heading && (
-            <PageBreak
+            <Breakable
               active={withPageBreaks}
               render={() => (
                 <Text
                   size="lg"
                   fw={700}
                   lh={1.25}
-                  c={textColor}
+                  c={colors.text}
                   style={{ overflowWrap: "anywhere" }}
                 >
                   {heading}
@@ -42,12 +42,12 @@ export const Description = ({
             />
           )}
           {date && (
-            <PageBreak
+            <Breakable
               active={withPageBreaks}
               render={() => (
                 <Text
                   fw={600}
-                  c={textColor}
+                  c={colors.text}
                   opacity={0.7}
                   style={{ overflowWrap: "anywhere" }}
                 >
@@ -57,10 +57,10 @@ export const Description = ({
             />
           )}
           {rating && (
-            <PageBreak
+            <Breakable
               active={withPageBreaks}
               render={() => (
-                <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {rating}
                 </Text>
               )}
@@ -68,17 +68,17 @@ export const Description = ({
           )}
 
           {description && (
-            <PageBreak
+            <Breakable
               active={withPageBreaks}
               render={() => (
-                <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {description}
                 </Text>
               )}
             />
           )}
           {list && (
-            <PageBreak
+            <Breakable
               active={withPageBreaks}
               render={() => (
                 <ListStack stack={list} withPageBreaks={withPageBreaks} />
@@ -89,7 +89,7 @@ export const Description = ({
       )}
       <Box>
         {tags && tags.length > 0 && (
-          <PageBreak
+          <Breakable
             active={withPageBreaks}
             render={() => (
               <BadgeGroup tags={tags} withPageBreaks={withPageBreaks} />

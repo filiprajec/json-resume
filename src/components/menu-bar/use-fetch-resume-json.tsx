@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import axios from "axios";
 import resumeSchema from "resume-schema";
 
-import { ResumeJsonSchema } from "@/resume-schema-types";
+import { ResumeJsonSchema } from "@/lib/resume-schema-types";
 
 export const useFetchResumeJson = () => {
   const [loading, setLoading] = useState<boolean>(false);

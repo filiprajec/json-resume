@@ -1,15 +1,12 @@
 import React, { Fragment } from "react";
 import { Flex, rem, Text, ThemeIcon, Timeline, Title } from "@mantine/core";
 
-import {
-  useLayoutLocation,
-  useResume,
-  type ResumeDataSectionKey,
-} from "@/context";
+import { useLayout, useResume, type ResumeDataSectionKey } from "@/context";
+import { getResumeSectionIcon } from "@/lib/get-resume-section-icon";
 import { Description } from "./description";
 import { BasicsSection } from "./basics-section";
-import { PageBreak, TimelineItemBreak } from "./page-break";
-import { getResumeSectionIcon } from "@/context/resume-context/get-resume-section-icon";
+import { Breakable } from "./breakable";
+import { TimelineBreakable } from "./timeline-breakable";
 
 interface SectionProps {
   sectionKey: ResumeDataSectionKey;
@@ -19,7 +16,7 @@ interface SectionProps {
 export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
   const { resumeConfig, sectionHasContent, getSectionProperties } = useResume();
   const sectionConfig = resumeConfig.sectionConfig[sectionKey];
-  const { textColor, accentColor } = useLayoutLocation();
+  const { colors } = useLayout();
   const properties = getSectionProperties(sectionKey);
   const icon = getResumeSectionIcon(sectionKey);
 
@@ -33,7 +30,7 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
 
   return (
     <Flex direction="column" gap="sm">
-      <PageBreak
+      <Breakable
         render={() => (
           <Flex
             direction="row"
@@ -44,10 +41,10 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
           >
             {sectionConfig?.showIcon && icon && (
               <ThemeIcon
-                variant="light"
-                radius="lg"
+                variant="filled"
+                radius="sm"
                 size="lg"
-                color={accentColor}
+                color={colors.primary}
               >
                 {React.createElement(icon, {
                   stroke: 1.5,
@@ -58,19 +55,19 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
                 })}
               </ThemeIcon>
             )}
-            <Title order={3} c={textColor}>
+            <Title order={3} c={colors.text}>
               {sectionConfig?.heading}
             </Title>
           </Flex>
         )}
       />
       {sectionConfig?.withTimeline === true ? (
-        <Timeline bulletSize="1rem">
+        <Timeline radius="sm" bulletSize="1rem" lineWidth={3}>
           {properties?.map((property) => (
-            <TimelineItemBreak
+            <TimelineBreakable
               key={`timeline-cell-${property.id}`}
               title={
-                <Text fw={700} size="lg" lh={1} c={textColor}>
+                <Text fw={700} size="lg" lh={1} c={colors.text}>
                   {property.heading}
                 </Text>
               }
@@ -88,10 +85,10 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
           ))}
         </Timeline>
       ) : (
-        <Flex direction="column" gap="xs">
+        <Flex direction="column" gap="md">
           {properties?.map((property) => (
             <Fragment key={`description-section-${property.id}`}>
-              <PageBreak
+              <Breakable
                 active={withPageBreaks}
                 render={() => (
                   <Description

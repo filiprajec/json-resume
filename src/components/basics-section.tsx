@@ -1,13 +1,13 @@
-import { Box, Flex, Stack, Text, Title } from "@mantine/core";
+import { Avatar, Box, Flex, Stack, Text, Title } from "@mantine/core";
 
-import { ResumeDataBasics, useLayoutLocation, useResume } from "@/context";
-import { PageBreak } from "./page-break";
+import { ResumeDataBasics, useLayout, useResume } from "@/context";
+import { Breakable } from "./breakable";
 
 export const BasicsSection = () => {
   const { getSection, resumeConfig } = useResume();
-  const [basics] = getSection("basics") as ResumeDataBasics[];
+  const [basics] = getSection("basics") as Partial<ResumeDataBasics>[];
   const sectionConfig = resumeConfig.sectionConfig.basics;
-  const { textColor } = useLayoutLocation();
+  const { colors } = useLayout();
 
   if (!basics) {
     return null;
@@ -18,38 +18,45 @@ export const BasicsSection = () => {
   }
 
   return (
-    <PageBreak
+    <Breakable
       active
       render={() => (
         <Flex direction="column" gap="xs">
           <Stack gap="xs">
-            <PageBreak
+            {sectionConfig.showIcon && (
+              <Avatar color={colors.primary} size="xl">
+                <Text ff="text" fz="h2">
+                  💻
+                </Text>
+              </Avatar>
+            )}
+            <Breakable
               render={() => (
                 <Title
                   order={1}
-                  c={textColor}
+                  c={colors.text}
                   style={{ overflowWrap: "anywhere" }}
                 >
                   {basics.name}
                 </Title>
               )}
             />
-            <PageBreak
+            <Breakable
               render={() => (
                 <Title
                   order={2}
-                  c={textColor}
+                  c={colors.text}
                   style={{ overflowWrap: "anywhere" }}
                 >
                   {basics.label}
                 </Title>
               )}
             />
-            <PageBreak
+            <Breakable
               render={() => (
                 <Title
                   order={4}
-                  c={textColor}
+                  c={colors.text}
                   style={{ overflowWrap: "anywhere" }}
                 >
                   {basics.location?.city}
@@ -58,34 +65,34 @@ export const BasicsSection = () => {
             />
           </Stack>
           <Box>
-            <PageBreak
+            <Breakable
               render={() => (
-                <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {basics.phone}
                 </Text>
               )}
             />
-            <PageBreak
+            <Breakable
               render={() => (
-                <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {basics.email}
                 </Text>
               )}
             />
-            <PageBreak
+            <Breakable
               render={() => (
-                <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {basics.url}
                 </Text>
               )}
             />
           </Box>
           <Box>
-            {basics.profiles.map((eachProfile) => (
-              <PageBreak
+            {basics.profiles?.map((eachProfile) => (
+              <Breakable
                 key={`profile-${eachProfile.network}-${eachProfile.username}`}
                 render={() => (
-                  <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                  <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                     <span style={{ fontWeight: 500 }}>
                       {eachProfile.network}:
                     </span>{" "}
@@ -96,10 +103,10 @@ export const BasicsSection = () => {
             ))}
           </Box>
           {basics.summary && (
-            <PageBreak
+            <Breakable
               render={() => (
                 <Box>
-                  <Text c={textColor} style={{ overflowWrap: "anywhere" }}>
+                  <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                     {basics.summary}
                   </Text>
                 </Box>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Stack, Text, Group } from "@mantine/core";
+import { Box, Button, Stack, Text, Group, Input } from "@mantine/core";
 
 import { usePage } from "@/context";
 import { EditJsonModal } from "./edit-json-modal";
@@ -13,17 +13,18 @@ export const ResumeJsonPanel = () => {
   return (
     <>
       <Box h="100%" pos="relative">
-        <Stack gap="xs">
-          <Text size="sm" fw={500}>
-            JSON
-          </Text>
-          <Group gap="xs" w="100%">
+        <Input.Wrapper
+          label="Resume JSON"
+          description="Paste a resume json into the editor or fetch from a URL. "
+          size="md"
+        >
+          <Group gap="xs" w="100%" mt="xs">
             <Button
               onClick={() => setEditJsonOpened(true)}
               disabled={["rendering", "fetching"].includes(pageState)}
               flex={1}
             >
-              Edit JSON
+              Open JSON editor
             </Button>
             <Button
               flex={1}
@@ -32,10 +33,10 @@ export const ResumeJsonPanel = () => {
               loading={pageState === "fetching"}
               disabled={["rendering", "fetching"].includes(pageState)}
             >
-              Get From URL
+              Get JSON from URL
             </Button>
           </Group>
-        </Stack>
+        </Input.Wrapper>
       </Box>
       <FetchJsonModal
         opened={loadJsonUrlModalOpened}

@@ -1,9 +1,9 @@
 import { useCallback, useRef } from "react";
-import { Box, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Box, Divider, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useListState, useShallowEffect } from "@mantine/hooks";
 import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd";
 
-import { notEmpty } from "@/utils";
+import { notEmpty } from "@/lib/utils";
 import { usePage, useResume, type ResumePageLayout } from "@/context";
 import { SectionList } from "./section-list";
 import type { ListState } from "./section-list-item";
@@ -11,7 +11,7 @@ import type { ListState } from "./section-list-item";
 export const SectionPanel = () => {
   const { getSectionKeysWithContent, resumeConfig, updateResumeConfig } =
     useResume();
-  const { pageState, runScaler } = usePage();
+  const { runScaler } = usePage();
   const hasDragged = useRef(false);
   const [panelState, panelHandlers] = useListState<ListState | undefined>(
     undefined
@@ -89,21 +89,18 @@ export const SectionPanel = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Stack>
-        <Text size="sm" fw={500}>
-          Layout
-        </Text>
-        <Box w="100%" mih={200} h="100%">
-          <SimpleGrid cols={2} spacing="xs">
-            <Box>
-              <SectionList state={panelState} droppableId={`panel-list`} />
-            </Box>
-            <Box>
-              <SectionList state={bodyState} droppableId={`body-list`} />
-            </Box>
-          </SimpleGrid>
-        </Box>
-      </Stack>
+      <Box w="100%" mih={200} h="100%">
+        <SimpleGrid cols={1} spacing="xs">
+          <Box>
+            <Divider label="Panel" mb="md" />
+            <SectionList state={panelState} droppableId={`panel-list`} />
+          </Box>
+          <Box>
+            <Divider label="Body" mb="md" />
+            <SectionList state={bodyState} droppableId={`body-list`} />
+          </Box>
+        </SimpleGrid>
+      </Box>
     </DragDropContext>
   );
 };

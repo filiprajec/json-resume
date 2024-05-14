@@ -1,4 +1,4 @@
-import { ResumeJsonSectionKey } from "@/resume-schema-types";
+import { ResumeJsonSectionKey } from "@/lib/resume-schema-types";
 import { ResumeDataSectionKey } from "./types";
 
 export const jsonSectionKeys: ResumeJsonSectionKey[] = [

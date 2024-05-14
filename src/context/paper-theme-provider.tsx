@@ -1,6 +1,6 @@
 import { MantineProvider } from "@mantine/core";
 
-import { paperTheme } from "@/theme";
+import { paperTheme } from "@/lib/theme";
 import { usePage } from "./page-context";
 
 interface PaperThemeProviderProps {

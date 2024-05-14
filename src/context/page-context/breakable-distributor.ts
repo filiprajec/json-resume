@@ -1,5 +1,5 @@
 import { ResumePage } from "./resume-page";
-import { notEmpty } from "@/utils";
+import { notEmpty } from "@/lib/utils";
 
 export type BreakableSetOptions = {
   page: number;

@@ -40,7 +40,7 @@ const accuracyConfigs: Record<AccuracyLevel, AccuracyConfig> = {
 };
 
 export class Scaler implements ScalerInterface {
-  private _scale = 1;
+  private _scale: number = 1;
   private onChange: (scale: number) => void;
   private onStart: () => void;
   private onEnd: (scale: number) => void;

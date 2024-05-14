@@ -1,6 +1,6 @@
 import { Badge, Group } from "@mantine/core";
 
-import { useLayoutLocation } from "@/context";
+import { useLayout } from "@/context";
 
 interface BadgeGroupProps {
   tags?: string[];
@@ -8,7 +8,7 @@ interface BadgeGroupProps {
 }
 
 export const BadgeGroup = ({ tags }: BadgeGroupProps) => {
-  const { accentColor } = useLayoutLocation();
+  const { colors } = useLayout();
   if (!tags) return null;
 
   return (
@@ -18,7 +18,7 @@ export const BadgeGroup = ({ tags }: BadgeGroupProps) => {
           size="lg"
           variant="light"
           key={`bubble-${tag.substring(0, 5)}-${tag.substring(tag.length - 5)}`}
-          color={accentColor}
+          color={colors.primary}
         >
           {tag}
         </Badge>

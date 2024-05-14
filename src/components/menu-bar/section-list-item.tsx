@@ -19,7 +19,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useDisclosure, useShallowEffect } from "@mantine/hooks";
 
 import { useResume, type ResumeDataSectionKey } from "@/context";
-import { capitalizeFirstLetter } from "@/utils";
+import { capitalizeFirstLetter } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 
 export type ListState = {
@@ -84,48 +84,48 @@ export const SectionListItem = ({ item, index }: SectionListItemProps) => {
             opened={opened}
             onClose={handlers.close}
           >
-            <Paper p={4} withBorder shadow="xs" opacity={hasContent ? 1 : 0.5}>
+            <Paper p="sm" radius="lg" withBorder opacity={hasContent ? 1 : 0.5}>
               <Flex align="center" justify="space-between">
-                <Group align="center" gap={4} wrap="nowrap">
+                <Group align="center" gap={6} wrap="nowrap">
                   <div {...provided.dragHandleProps}>
-                    <Center c="dimmed" h="100%">
+                    <Center h="100%">
                       <IconGripVertical
                         style={{
-                          width: rem(14),
-                          height: rem(14),
+                          width: rem(16),
+                          height: rem(16),
                         }}
                         stroke={1.5}
                       />
                     </Center>
                   </div>
-                  <Text size="xs" fw={500} c="dimmed">
+                  <Text size="sm" fw={500}>
                     {capitalizeFirstLetter(sectionKey)}
                   </Text>
                 </Group>
-                <Group justify="end" gap={4} wrap="nowrap">
+                <Group justify="end" gap="xs" wrap="nowrap">
                   {!hasContent && (
-                    <Badge color="gray" variant="light" size="xs">
+                    <Badge color="gray" variant="light" size="sm">
                       Empty
                     </Badge>
                   )}
                   {hasContent && !sectionConfig?.visible && (
-                    <Badge color="gray" variant="light" size="xs">
+                    <Badge color="gray" variant="light" size="sm">
                       Hidden
                     </Badge>
                   )}
                   <Popover.Target>
                     <ActionIcon
-                      variant="light"
-                      size="xs"
-                      radius="sm"
+                      variant="filled"
+                      size="sm"
+                      radius="xl"
                       onClick={handlers.toggle}
                       disabled={!hasContent}
                     >
                       <IconEditCircle
                         stroke={1.5}
                         style={{
-                          width: rem(14),
-                          height: rem(14),
+                          width: rem(16),
+                          height: rem(16),
                         }}
                       />
                     </ActionIcon>
@@ -138,31 +138,31 @@ export const SectionListItem = ({ item, index }: SectionListItemProps) => {
                     <TextInput
                       placeholder="Enter Title"
                       label="Section Title"
-                      size="xs"
+                      size="sm"
                       {...sectionForm.getInputProps("heading")}
                     />
                   )}
                   <Stack gap="sm">
                     <Switch
                       label="Visible"
-                      size="xs"
+                      size="sm"
                       {...sectionForm.getInputProps("visible", {
+                        type: "checkbox",
+                      })}
+                    />
+                    <Switch
+                      label={
+                        sectionKey !== "basics" ? "Show Icon" : "Show Avatar"
+                      }
+                      size="sm"
+                      {...sectionForm.getInputProps("showIcon", {
                         type: "checkbox",
                       })}
                     />
                     {sectionKey !== "basics" && (
                       <Switch
-                        label="Show Icon"
-                        size="xs"
-                        {...sectionForm.getInputProps("showIcon", {
-                          type: "checkbox",
-                        })}
-                      />
-                    )}
-                    {sectionKey !== "basics" && (
-                      <Switch
                         label="With Timeline"
-                        size="xs"
+                        size="sm"
                         {...sectionForm.getInputProps("withTimeline", {
                           type: "checkbox",
                         })}
@@ -172,7 +172,7 @@ export const SectionListItem = ({ item, index }: SectionListItemProps) => {
 
                   <Button
                     onClick={() => handleSubmit(sectionForm.getValues())}
-                    size="xs"
+                    size="sm"
                   >
                     Update
                   </Button>

@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Group, Text } from "@mantine/core";
+import { ActionIcon, Badge, Flex, Group, Text } from "@mantine/core";
 import { IconDeviceFloppy, IconPrinter } from "@tabler/icons-react";
 
 import { usePage, useResume } from "@/context";
@@ -12,9 +12,12 @@ export const Header = () => {
     <Flex justify="space-between" px="md" align="center" h="100%">
       <Flex gap="xs">
         <Text fw={700}>🧑‍💻</Text>
-        <Text fw={700}>JSON Resume x Mantine</Text>
+        <Text fw={700}>JSON Resume</Text>
       </Flex>
       <Group gap="xs">
+        <Badge variant="dot" color="green">
+          Autosave
+        </Badge>
         <ActionIcon
           onClick={() => save()}
           size="md"

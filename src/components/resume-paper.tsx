@@ -7,7 +7,7 @@ import {
   useResume,
   usePage,
   type ResumeDataSectionKey,
-  LayoutLocationProvider,
+  LayoutProvider,
 } from "@/context";
 import { Section } from "./section";
 
@@ -34,7 +34,7 @@ export const ResumePaper = () => {
           }}
         >
           {hasPanel && (
-            <LayoutLocationProvider layoutLocation="panel">
+            <LayoutProvider componentLocation="panel">
               <Flex
                 bg={
                   resumeConfig.colorScheme.inverted
@@ -42,20 +42,19 @@ export const ResumePaper = () => {
                     : resumeConfig.colorScheme.secondary
                 }
                 direction="column"
-                gap="md"
+                gap="lg"
                 py="sm"
                 px="md"
                 flex={1}
                 maw="35%"
-                // mah={`calc(${pageCount} * 29.7cm - ${marginY * 2}px)`}
               >
                 {layout.panel.map((sectionKey: ResumeDataSectionKey) => (
                   <Section sectionKey={sectionKey} key={sectionKey} />
                 ))}
               </Flex>
-            </LayoutLocationProvider>
+            </LayoutProvider>
           )}
-          <LayoutLocationProvider layoutLocation="body">
+          <LayoutProvider componentLocation="body">
             <Flex direction="column" gap="lg" px="md" flex={2}>
               {layout?.body.map((sectionKey: ResumeDataSectionKey) => (
                 <Section
@@ -65,60 +64,38 @@ export const ResumePaper = () => {
                 />
               ))}
             </Flex>
-          </LayoutLocationProvider>
+          </LayoutProvider>
         </Flex>
       </PaperInner>
     </Paper>
   );
 };
 
-const LoadingPage = () => {
+const EmptyPage = () => {
   return (
     <FullPage style={{ zIndex: 2 }}>
       <MantineProvider
         getRootElement={() =>
-          document.getElementById("loader-root") ?? undefined
+          document.getElementById("empty-root") ?? undefined
         }
-        cssVariablesSelector="#loader-root"
+        cssVariablesSelector="#empty-root"
         theme={{ scale: 1 }}
       >
-        <Box id="loader-root">
-          <Loader size="xl" />
+        <Box id="empty-root">
+          <Text c="dimmed">Nothing here...</Text>
         </Box>
       </MantineProvider>
     </FullPage>
   );
 };
 
-const EmptyPage = () => {
-  return (
-    <Paper>
-      <FullPage style={{ zIndex: 2 }}>
-        <MantineProvider
-          getRootElement={() =>
-            document.getElementById("empty-root") ?? undefined
-          }
-          cssVariablesSelector="#empty-root"
-          theme={{ scale: 1 }}
-        >
-          <Box id="empty-root">
-            <Text c="dimmed">Nothing here...</Text>
-          </Box>
-        </MantineProvider>
-      </FullPage>
-    </Paper>
-  );
-};
-
 const ErrorPage = () => {
   return (
-    <Paper>
-      <FullPage>
-        <Box w={40} h={40} c="dimmed">
-          <IconExclamationCircle />
-        </Box>
-      </FullPage>
-    </Paper>
+    <FullPage style={{ zIndex: 2 }}>
+      <Box w={40} h={40} c="dimmed">
+        <IconExclamationCircle />
+      </Box>
+    </FullPage>
   );
 };
 

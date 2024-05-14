@@ -2,8 +2,8 @@ import { createTheme } from "@mantine/core";
 
 export const theme = createTheme({
   fontFamily: "Inter",
-  primaryColor: "violet",
-  defaultRadius: "md",
+  primaryColor: "dark",
+  defaultRadius: "lg",
 });
 
 export const paperTheme = (scale: number) =>
@@ -13,8 +13,8 @@ export const paperTheme = (scale: number) =>
       fontFamily: "Karrik",
       sizes: {
         h1: {
-          fontSize: "calc(2.5rem * var(--mantine-scale))",
-          lineHeight: "calc(2.75rem * var(--mantine-scale))",
+          fontSize: "calc(3rem * var(--mantine-scale))",
+          lineHeight: "calc(3.25rem * var(--mantine-scale))",
         },
         h2: {
           fontSize: "calc(2rem * var(--mantine-scale))",

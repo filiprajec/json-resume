@@ -3,7 +3,7 @@ import { useField } from "@mantine/form";
 
 import { usePage, useResume } from "@/context";
 import { useFetchResumeJson } from "./use-fetch-resume-json";
-import { ResumeJsonSchema } from "@/resume-schema-types";
+import { ResumeJsonSchema } from "@/lib/resume-schema-types";
 import { logger } from "@/lib/logger";
 
 interface FetchJsonModalProps {

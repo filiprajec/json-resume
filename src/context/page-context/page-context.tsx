@@ -71,21 +71,21 @@ const initialContext: InitialContext = {
 const PageContext = createContext<InitialContext>(initialContext);
 
 export const PageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [pageState, setPageState] = useState<PageState>("initial");
-  const [marginY, setMarginY] = useState<number>(42);
-  const [marginX, setMarginX] = useState<number>(32);
-  const [scale, setScale] = useState<number>(1);
   const [accuracyLevel, setAccuracyLevel] = useState<AccuracyLevel>("low");
-  const pageRef = useRef<HTMLDivElement | null>(null);
-  const breakablesBody = useRef<BreakableItem[]>([]);
-  const breakablesPanel = useRef<BreakableItem[]>([]);
+  const [marginX, setMarginX] = useState<number>(32);
+  const [marginY, setMarginY] = useState<number>(42);
+  const [pageState, setPageState] = useState<PageState>("initial");
+  const [scale, setScale] = useState<number>(1);
   const { resumeConfig, addOnConfigChangeEvent } = useResume();
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const resumePage = useRef<ResumePage | null>(null);
-  const scaler = useRef<Scaler | null>(null);
   const breakableBodyDistributor = useRef<BreakableDistributor | null>(null);
   const breakablePanelDistributor = useRef<BreakableDistributor | null>(null);
+  const breakablesBody = useRef<BreakableItem[]>([]);
+  const breakablesPanel = useRef<BreakableItem[]>([]);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const isInitialised = useRef<boolean>(false);
+  const pageRef = useRef<HTMLDivElement | null>(null);
+  const resumePage = useRef<ResumePage | null>(null);
+  const scaler = useRef<Scaler | null>(null);
 
   const initialise = useCallback(() => {
     if (isInitialised.current) {
