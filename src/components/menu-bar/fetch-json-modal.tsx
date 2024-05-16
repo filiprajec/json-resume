@@ -2,8 +2,7 @@ import { Button, TextInput, Stack, Modal, Flex, Group } from "@mantine/core";
 import { useField } from "@mantine/form";
 
 import { usePage, useResume } from "@/context";
-import { useFetchResumeJson } from "./use-fetch-resume-json";
-import { ResumeJsonSchema } from "@/lib/resume-schema-types";
+import { useFetchResumeJson } from "@/hooks/use-fetch-resume-json";
 import { logger } from "@/lib/logger";
 
 interface FetchJsonModalProps {
@@ -20,8 +19,7 @@ export const FetchJsonModal = ({
   const { fetch, loading } = useFetchResumeJson();
 
   const field = useField({
-    initialValue:
-      "https://raw.githubusercontent.com/jsonresume/resume-schema/master/sample.resume.json",
+    initialValue: "https://www.dingohead.com/resume.json",
   });
 
   const onClose = () => {

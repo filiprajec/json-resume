@@ -1,14 +1,14 @@
 import { Box, Text, Stack, Paper, Center } from "@mantine/core";
 import { Droppable } from "@hello-pangea/dnd";
 
-import { type ListState, SectionListItem } from "./section-list-item";
+import { type ListState, LayoutListItem } from "./layout-list-item";
 
-interface SectionListProps {
+interface LayoutListProps {
   state: (ListState | undefined)[];
   droppableId: string;
 }
 
-export const SectionList = ({ state, droppableId }: SectionListProps) => {
+export const LayoutList = ({ state, droppableId }: LayoutListProps) => {
   return (
     <Box pos="relative">
       <Stack gap="xs" pos="relative" style={{ zIndex: 1 }}>
@@ -20,7 +20,7 @@ export const SectionList = ({ state, droppableId }: SectionListProps) => {
                   if (!item) return null;
 
                   return (
-                    <SectionListItem
+                    <LayoutListItem
                       item={item}
                       index={index}
                       key={item.sectionKey}

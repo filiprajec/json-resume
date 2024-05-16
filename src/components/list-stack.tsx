@@ -5,10 +5,9 @@ import { Breakable } from "./breakable";
 
 interface ListStackProps {
   stack?: string[];
-  withPageBreaks?: boolean;
 }
 
-export const ListStack = ({ stack, withPageBreaks }: ListStackProps) => {
+export const ListStack = ({ stack }: ListStackProps) => {
   const { colors } = useLayout();
 
   if (!stack || stack.length === 0) return null;
@@ -23,7 +22,7 @@ export const ListStack = ({ stack, withPageBreaks }: ListStackProps) => {
             eachPoint.substring(0, 5),
             eachPoint.substring(eachPoint.length - 5),
           ].join("-")}
-          active={withPageBreaks}
+          active
           render={() => (
             <List.Item
               c={colors.text}

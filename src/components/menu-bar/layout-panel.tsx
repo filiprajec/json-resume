@@ -5,10 +5,10 @@ import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd";
 
 import { notEmpty } from "@/lib/utils";
 import { usePage, useResume, type ResumePageLayout } from "@/context";
-import { SectionList } from "./section-list";
-import type { ListState } from "./section-list-item";
+import { LayoutList } from "./layout-list";
+import type { ListState } from "./layout-list-item";
 
-export const SectionPanel = () => {
+export const LayoutPanel = () => {
   const { getSectionKeysWithContent, resumeConfig, updateResumeConfig } =
     useResume();
   const { runScaler } = usePage();
@@ -93,11 +93,11 @@ export const SectionPanel = () => {
         <SimpleGrid cols={1} spacing="xs">
           <Box>
             <Divider label="Panel" mb="md" />
-            <SectionList state={panelState} droppableId={`panel-list`} />
+            <LayoutList state={panelState} droppableId={`panel-list`} />
           </Box>
           <Box>
             <Divider label="Body" mb="md" />
-            <SectionList state={bodyState} droppableId={`body-list`} />
+            <LayoutList state={bodyState} droppableId={`body-list`} />
           </Box>
         </SimpleGrid>
       </Box>

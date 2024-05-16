@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, Flex, Loader, MantineProvider, Text } from "@mantine/core";
+import { Box, Flex } from "@mantine/core";
 import styled from "styled-components";
-import { IconExclamationCircle } from "@tabler/icons-react";
 
 import {
   useResume,
@@ -10,19 +9,40 @@ import {
   LayoutProvider,
 } from "@/context";
 import { Section } from "./section";
+import { ErrorPageOverlay } from "./error-page-overlay";
+import { EmptyPageOverlay } from "./empty-page-overlay";
+
+const ResumePaperOverlay = () => {
+  const { pageState } = usePage();
+  const { isResumeEmpty } = useResume();
+
+  if (pageState === "error") {
+    return <ErrorPageOverlay />;
+  }
+
+  if (isResumeEmpty()) {
+    return <EmptyPageOverlay />;
+  }
+
+  return null;
+};
 
 export const ResumePaper = () => {
-  const { attachContentRef, attachResumeRef, marginX, marginY, pageState } =
-    usePage();
-  const { resumeConfig, isResumeEmpty } = useResume();
+  const { attachContentRef, attachResumeRef, marginX, marginY } = usePage();
+  const { resumeConfig } = useResume();
   const { pageCount, layout } = resumeConfig;
   const hasPanel = layout.panel && layout.panel.length > 0;
 
   return (
     <Paper pages={pageCount}>
-      {pageState === "error" && <ErrorPage />}
-      {isResumeEmpty() && <EmptyPage />}
-      <PaperInner ref={attachResumeRef}>
+      <ResumePaperOverlay />
+      <Box
+        ref={attachResumeRef}
+        pos="absolute"
+        w="100%"
+        h="100%"
+        style={{ boxSizing: "content-box" }}
+      >
         <Flex
           ref={attachContentRef}
           direction="row"
@@ -57,45 +77,13 @@ export const ResumePaper = () => {
           <LayoutProvider componentLocation="body">
             <Flex direction="column" gap="lg" px="md" flex={2}>
               {layout?.body.map((sectionKey: ResumeDataSectionKey) => (
-                <Section
-                  key={sectionKey}
-                  sectionKey={sectionKey}
-                  withPageBreaks
-                />
+                <Section key={sectionKey} sectionKey={sectionKey} />
               ))}
             </Flex>
           </LayoutProvider>
         </Flex>
-      </PaperInner>
-    </Paper>
-  );
-};
-
-const EmptyPage = () => {
-  return (
-    <FullPage style={{ zIndex: 2 }}>
-      <MantineProvider
-        getRootElement={() =>
-          document.getElementById("empty-root") ?? undefined
-        }
-        cssVariablesSelector="#empty-root"
-        theme={{ scale: 1 }}
-      >
-        <Box id="empty-root">
-          <Text c="dimmed">Nothing here...</Text>
-        </Box>
-      </MantineProvider>
-    </FullPage>
-  );
-};
-
-const ErrorPage = () => {
-  return (
-    <FullPage style={{ zIndex: 2 }}>
-      <Box w={40} h={40} c="dimmed">
-        <IconExclamationCircle />
       </Box>
-    </FullPage>
+    </Paper>
   );
 };
 
@@ -129,22 +117,4 @@ const Paper = styled.div<{
     box-shadow: none;
     border: none;
   }
-`;
-
-const PaperInner = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  box-sizing: content-box;
-`;
-
-const FullPage = styled.div`
-  display: flex;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: var(--mantine-color-white);
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
 `;

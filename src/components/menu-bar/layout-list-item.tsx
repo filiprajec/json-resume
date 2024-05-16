@@ -18,7 +18,7 @@ import { IconEditCircle, IconGripVertical } from "@tabler/icons-react";
 import { Draggable } from "@hello-pangea/dnd";
 import { useDisclosure, useShallowEffect } from "@mantine/hooks";
 
-import { useResume, type ResumeDataSectionKey } from "@/context";
+import { usePage, useResume, type ResumeDataSectionKey } from "@/context";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 
@@ -26,7 +26,7 @@ export type ListState = {
   sectionKey: ResumeDataSectionKey;
 };
 
-export type SectionFormValues = {
+export type LayoutFormValues = {
   heading: string | undefined;
   sectionKey: ResumeDataSectionKey;
   visible: boolean;
@@ -34,15 +34,16 @@ export type SectionFormValues = {
   showIcon: boolean;
 };
 
-interface SectionListItemProps {
+interface LayoutListItemProps {
   item: ListState;
   index: number;
 }
 
-export const SectionListItem = ({ item, index }: SectionListItemProps) => {
+export const LayoutListItem = ({ item, index }: LayoutListItemProps) => {
   const { sectionHasContent, resumeConfig, updateResumeSectionConfig } =
     useResume();
-  const sectionForm = useForm<SectionFormValues>({
+  const { pageState } = usePage();
+  const sectionForm = useForm<LayoutFormValues>({
     initialValues: {
       ...resumeConfig.sectionConfig[item.sectionKey],
       sectionKey: item.sectionKey,
@@ -58,7 +59,7 @@ export const SectionListItem = ({ item, index }: SectionListItemProps) => {
     sectionForm.setValues(resumeConfig.sectionConfig[sectionKey]);
   }, [resumeConfig.sectionConfig[sectionKey]]);
 
-  const handleSubmit = (values: SectionFormValues) => {
+  const handleSubmit = (values: LayoutFormValues) => {
     try {
       updateResumeSectionConfig(sectionKey, {
         heading: values.heading,
@@ -73,8 +74,13 @@ export const SectionListItem = ({ item, index }: SectionListItemProps) => {
   };
 
   return (
-    <Draggable key={sectionKey} index={index} draggableId={sectionKey}>
-      {(provided, snapshot) => (
+    <Draggable
+      key={sectionKey}
+      index={index}
+      draggableId={sectionKey}
+      isDragDisabled={pageState !== "ready"}
+    >
+      {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
           <Popover
             width={200}

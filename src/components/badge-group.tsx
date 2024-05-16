@@ -4,7 +4,6 @@ import { useLayout } from "@/context";
 
 interface BadgeGroupProps {
   tags?: string[];
-  withPageBreaks?: boolean;
 }
 
 export const BadgeGroup = ({ tags }: BadgeGroupProps) => {

@@ -8,13 +8,11 @@ import { Breakable } from "./breakable";
 interface DescriptionProps {
   property: SectionProperty;
   withHeading?: boolean;
-  withPageBreaks?: boolean;
 }
 
 export const Description = ({
   property,
   withHeading = true,
-  withPageBreaks,
 }: DescriptionProps) => {
   const { heading, rating, description, date, list, tags } = property;
   const { colors } = useLayout();
@@ -27,7 +25,7 @@ export const Description = ({
         <Flex direction="column" gap={4}>
           {withHeading && heading && (
             <Breakable
-              active={withPageBreaks}
+              active={false}
               render={() => (
                 <Text
                   size="lg"
@@ -43,7 +41,6 @@ export const Description = ({
           )}
           {date && (
             <Breakable
-              active={withPageBreaks}
               render={() => (
                 <Text
                   fw={600}
@@ -58,7 +55,6 @@ export const Description = ({
           )}
           {rating && (
             <Breakable
-              active={withPageBreaks}
               render={() => (
                 <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {rating}
@@ -69,7 +65,6 @@ export const Description = ({
 
           {description && (
             <Breakable
-              active={withPageBreaks}
               render={() => (
                 <Text c={colors.text} style={{ overflowWrap: "anywhere" }}>
                   {description}
@@ -77,24 +72,12 @@ export const Description = ({
               )}
             />
           )}
-          {list && (
-            <Breakable
-              active={withPageBreaks}
-              render={() => (
-                <ListStack stack={list} withPageBreaks={withPageBreaks} />
-              )}
-            />
-          )}
+          {list && <Breakable render={() => <ListStack stack={list} />} />}
         </Flex>
       )}
       <Box>
         {tags && tags.length > 0 && (
-          <Breakable
-            active={withPageBreaks}
-            render={() => (
-              <BadgeGroup tags={tags} withPageBreaks={withPageBreaks} />
-            )}
-          />
+          <Breakable render={() => <BadgeGroup tags={tags} />} />
         )}
       </Box>
     </Flex>

@@ -2,7 +2,7 @@ import { Box, NumberInput } from "@mantine/core";
 
 import { usePage, useResume } from "@/context";
 
-export const SelectPagesSection = () => {
+export const SelectPagesPanel = () => {
   const { resumeConfig, updateResumeConfig: updateConfig } = useResume();
   const { pageState } = usePage();
 

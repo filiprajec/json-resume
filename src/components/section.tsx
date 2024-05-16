@@ -10,10 +10,9 @@ import { TimelineBreakable } from "./timeline-breakable";
 
 interface SectionProps {
   sectionKey: ResumeDataSectionKey;
-  withPageBreaks?: boolean;
 }
 
-export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
+export const Section = ({ sectionKey }: SectionProps) => {
   const { resumeConfig, sectionHasContent, getSectionProperties } = useResume();
   const sectionConfig = resumeConfig.sectionConfig[sectionKey];
   const { colors } = useLayout();
@@ -31,6 +30,7 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
   return (
     <Flex direction="column" gap="sm">
       <Breakable
+        active={false}
         render={() => (
           <Flex
             direction="row"
@@ -71,14 +71,10 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
                   {property.heading}
                 </Text>
               }
-              active={withPageBreaks}
+              active
               render={() => (
                 <Flex direction="column">
-                  <Description
-                    property={property}
-                    withHeading={false}
-                    withPageBreaks={withPageBreaks}
-                  />
+                  <Description property={property} withHeading={false} />
                 </Flex>
               )}
             />
@@ -89,13 +85,8 @@ export const Section = ({ sectionKey, withPageBreaks }: SectionProps) => {
           {properties?.map((property) => (
             <Fragment key={`description-section-${property.id}`}>
               <Breakable
-                active={withPageBreaks}
-                render={() => (
-                  <Description
-                    property={property}
-                    withPageBreaks={withPageBreaks}
-                  />
-                )}
+                active
+                render={() => <Description property={property} />}
               />
             </Fragment>
           ))}

@@ -113,6 +113,7 @@ export class BreakableDistributor implements BreakableDistributorInterface {
         ref: breakable,
         top: elTop,
         left: elLeft,
+        active: breakable.options.active ?? true,
       };
     });
   }
@@ -142,7 +143,10 @@ export class BreakableDistributor implements BreakableDistributorInterface {
       const currentPageTop = pageProperties.startYs[pageNumber];
 
       const pageBreakRefsInCurrentPage = breakablesWithDistances?.filter(
-        (ref) => ref?.bottom < currentPageBottom && ref?.top > currentPageTop
+        (ref) =>
+          ref.bottom < currentPageBottom &&
+          ref.top > currentPageTop &&
+          ref.active
       );
 
       if (pageNumber === pageProperties.breakYs.length - 2) {
