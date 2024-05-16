@@ -1,6 +1,6 @@
 const config = {
   debug: false,
-  warn: true,
+  warn: false,
   error: true,
 };
 
