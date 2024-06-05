@@ -1,41 +1,36 @@
-$directory: ".";
-$font-family: "Karrik";
-$regular-name: "#{$font-family}-Regular";
-$italics-name: "#{$font-family}-Italic";
-
 @font-face {
-  font-family: $font-family;
-  src: url("#{$directory}/TFF/#{$regular-name}.ttf");
-  src: url("#{$directory}/WOFF/#{$regular-name}.woff") format("woff"),
-    url("#{$directory}/WOFF2/#{$regular-name}.woff2") format("woff2"),
-    url("#{$directory}/TFF/#{$regular-name}.ttf") format("truetype");
+  font-family: "Karrik";
+  src: url("./TFF/Karrik-Regular.ttf");
+  src: url("./WOFF/Karrik-Regular.woff") format("woff"),
+    url("./WOFF2/Karrik-Regular.woff2") format("woff2"),
+    url("./TFF/Karrik-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
-  font-family: $font-family;
-  src: url("#{$directory}/TFF/#{$regular-name}.ttf");
-  src: url("#{$directory}/WOFF/#{$regular-name}.woff") format("woff"),
-    url("#{$directory}/WOFF2/#{$regular-name}.woff2") format("woff2"),
-    url("#{$directory}/TFF/#{$regular-name}.ttf") format("truetype");
+  font-family: "Karrik";
+  src: url("./TFF/Karrik-Regular.ttf");
+  src: url("./WOFF/Karrik-Regular.woff") format("woff"),
+    url("./WOFF2/Karrik-Regular.woff2") format("woff2"),
+    url("./TFF/Karrik-Regular.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
 @font-face {
-  font-family: $font-family;
-  src: url("#{$directory}/TFF/#{$italics-name}.ttf");
-  src: url("#{$directory}/WOFF/#{$italics-name}.woff") format("woff"),
-    url("#{$directory}/WOFF2/#{$italics-name}.woff2") format("woff2"),
-    url("#{$directory}/TFF/#{$italics-name}.ttf") format("truetype");
+  font-family: "Karrik";
+  src: url("./TFF/Karrik-Italic.ttf");
+  src: url("./WOFF/Karrik-Italic.woff") format("woff"),
+    url("./WOFF2/Karrik-Italic.woff2") format("woff2"),
+    url("./TFF/Karrik-Italic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
 }
 @font-face {
-  font-family: $font-family;
-  src: url("#{$directory}/TFF/#{$italics-name}.ttf");
-  src: url("#{$directory}/WOFF/#{$italics-name}.woff") format("woff"),
-    url("#{$directory}/WOFF2/#{$italics-name}.woff2") format("woff2"),
-    url("#{$directory}/TFF/#{$italics-name}.ttf") format("truetype");
+  font-family: "Karrik";
+  src: url("./TFF/Karrik-Italic.ttf");
+  src: url("./WOFF/Karrik-Italic.woff") format("woff"),
+    url("./WOFF2/Karrik-Italic.woff2") format("woff2"),
+    url("./TFF/Karrik-Italic.ttf") format("truetype");
   font-weight: 700;
   font-style: italic;
 }
